@@ -22,10 +22,16 @@ data lives only in the user's browser and in share links (the `#…` part of the
   `C` (checkbox), `R` (choice), `G` (side-by-side grid), `H` (sub-heading), `N` (note), `TBL` (repeating table
   rows with `min`, `max`, `fixed` and `cols`). Options: `req` (red * marker), `showIf:[key,value]`,
   `screenOnly`, `span` (table column width out of 4), and `printLabel` / `printSign` for print.
-- **Link format:** `#` plus a one-letter prefix (`A` = raw, `B` = deflate-raw) plus base64url of
-  `[FORMAT_VERSION][varint bitset length][bitset of checkboxes and choices][(gap, length, UTF-8)* for non-empty
-  strings]`. Positions come from walking the schema in order, with table cells expanded to `max` rows. Any
-  change to field order, field count or table `max` changes the format: bump `FORMAT_VERSION`.
+- **Link format (keyed, backwards compatible):** `#` plus `J` (deflate-raw) or `j` (uncompressed) plus base64url of
+  a JSON object. Text fields are stored as `"key":"value"`, checkboxes as `1`, choices as the 1-based option
+  number, and tables as `"key":[[colKeys…],row,…]`. A row is an array of cells (`""`, text or `1`), or `0` for an
+  empty row. `toObj`/`fromObj` convert between this and `S`.
+  - Fields can be added, removed and reordered freely. **Never rename a key or reuse it for a new meaning.**
+    Add removed keys to `RETIRED` with a readable label.
+  - On load, `fromObj` puts values it can't place (unknown key or column, wrong type, choice option out of range)
+    into `unknown`. `showNotice` lists them above the form. They are never put into `S`, so saves and prints drop
+    them. The original link is kept in the address bar until the first edit or until the notice is closed.
+  - Choice options are stored by position: only append options, never reorder them.
 - State: `S` (key → value). It's saved to `localStorage['ibp.v1']` and the URL hash. A replaced draft goes to
   `ibp.backup`, and open/closed sections are in `ibp.open`.
 - Print: `renderPrint()` builds a separate `#print` DOM (a Tukes-style A4 layout) after every save. Print CSS shows

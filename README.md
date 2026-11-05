@@ -16,8 +16,8 @@ applied, and the inspector.
   address after `#`. The `#` part is never sent to the web server, so no data leaves the device unless you
   share the link yourself.
 - **Share with a QR code.** **Dela / QR-kod** shows a QR code and a link. Opening the link on another device
-  fills in the whole protocol. The data is packed into a compact binary format, compressed with deflate and
-  encoded as base64url. A fully filled-in protocol is about 750 characters.
+  fills in the whole protocol. The data is stored as JSON with a key for every value, compressed with deflate
+  and encoded as base64url. A fully filled-in protocol is about 900 characters.
 - **Print.** **Skriv ut** prints a compact A4 layout modelled on the Tukes form. A typical protocol fits on one
   page.
 - Fields marked **\*** and sections marked **Krävs** are required content, based on our reading of government
@@ -39,6 +39,12 @@ clipboard work.
 
 ## Changing the form
 
-The form is defined by `SECTIONS` in `index.html`, and the link format is derived from the order of the fields.
-Adding, removing or reordering fields therefore breaks existing links. When you do that, bump `FORMAT_VERSION`.
-Links made with the old version then show an error instead of loading wrong data.
+The form is defined by `SECTIONS` in `index.html`. Links store every value under its field key, so fields and
+table columns can be added, removed or reordered without breaking old links:
+
+- **New fields** are simply empty when an older link is opened.
+- **Values the form doesn't know** are shown in a notice above the form when a link is opened. That covers
+  removed fields, fields whose type changed, and choice options that no longer exist. They're not loaded into
+  the form, saved or printed, and the notice can be closed.
+- **Never reuse a key for something else.** When you remove a field, add its key and a readable label to
+  `RETIRED`, so the notice can name it.
