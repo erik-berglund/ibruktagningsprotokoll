@@ -34,7 +34,7 @@ body{margin:0;background:var(--bg);color:var(--text);
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
 main{max-width:760px;margin:0 auto;padding:12px 12px 0}
 .card,details.sec{background:var(--card);border:1px solid var(--line);border-radius:14px;
-  margin-bottom:10px;box-shadow:var(--shadow)}
+  margin-bottom:16px;box-shadow:var(--shadow)}
 .card{padding:14px}
 details.sec>summary{list-style:none;cursor:pointer;padding:14px;display:flex;align-items:center;gap:10px;
   font-weight:650;min-height:52px}
@@ -82,10 +82,12 @@ input:focus,textarea:focus,.btn:focus-visible,.seg button:focus-visible{outline:
 .item-title{font-weight:600;margin-bottom:8px;display:block}
 .item .fld:first-of-type{margin-top:0}
 .note{font-size:13px;color:var(--muted);margin:10px 0 0}
-.trow{border:1px solid var(--line);border-radius:12px;padding:4px 12px 12px;margin-top:10px}
+.trow{position:relative;border:1px solid var(--line);border-radius:12px;padding:4px 12px 12px;margin-top:10px}
+.row-del{position:absolute;top:2px;right:2px;width:30px;height:30px;border:0;border-radius:8px;background:none;color:var(--muted);font-size:15px;cursor:pointer}
+.row-del:hover,.row-del:focus-visible{color:#c0392b;background:var(--accent-soft)}
 .trow-h{font-size:13px;font-weight:650;margin-top:8px}
 .tbl-add{margin-top:10px;width:100%}
-.foot{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.foot{display:flex;flex-wrap:wrap;gap:8px;margin:32px 0 16px}
 .foot .btn{flex:1 1 auto}
 .notice{position:relative;background:var(--card);border:1px solid var(--line);border-left:4px solid #d08a00;border-radius:12px;padding:12px 44px 12px 14px;margin-bottom:10px;font-size:14px}
 .notice p{margin:4px 0 8px;color:var(--muted)}
@@ -96,6 +98,7 @@ input:focus,textarea:focus,.btn:focus-visible,.seg button:focus-visible{outline:
 .notice-x:focus-visible{outline:3px solid var(--focus)}
 .foot .btn.wide{flex-basis:100%}
 .intro{padding:max(8px,env(safe-area-inset-top)) 2px 12px}
+.intro .help-btn{margin-top:10px}
 .intro h1{font-size:22px;margin:0;line-height:1.2}
 .muted{color:var(--muted);font-size:13px}
 dialog{border:0;border-radius:16px;padding:0;width:min(440px,calc(100vw - 24px));background:var(--card);color:var(--text)}
@@ -116,6 +119,38 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
 @media (min-width:640px){
   main{padding:20px 16px 0}
 }
+.help-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--input);color:var(--accent);
+  font:inherit;font-size:14px;font-weight:600;border-radius:999px;padding:6px 12px 6px 8px;min-height:36px;cursor:pointer}
+.help-btn::before{content:"?";display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;
+  background:var(--accent);color:var(--accent-ink);font:700 14px/1 system-ui,sans-serif}
+.help-icon{flex:none;width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--input);
+  color:var(--accent);font:700 17px/1 system-ui,sans-serif;cursor:pointer;display:grid;place-items:center;padding:0}
+.help-icon:hover,.help-icon:focus-visible{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+#helpDlg{width:min(680px,calc(100vw - 16px));max-height:calc(100dvh - 24px);display:none;flex-direction:column}
+#helpDlg[open]{display:flex}
+#helpDlg .dlg-head{display:flex;align-items:center;gap:8px;padding:12px 8px 12px 16px;border-bottom:1px solid var(--line)}
+#helpDlg .dlg-head h2{flex:1;margin:0;font-size:18px;line-height:1.25}
+#helpDlg .x{width:40px;height:40px;border:0;background:none;color:var(--muted);font-size:26px;line-height:1;border-radius:8px;cursor:pointer}
+#helpBody{overflow:auto;padding:4px 16px 20px;font-size:15px;line-height:1.5}
+#helpBody h3{font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:22px 0 8px}
+#helpBody h4{font-size:15px;margin:16px 0 4px}
+#helpBody p{margin:8px 0}
+#helpBody ol,#helpBody ul{margin:6px 0;padding-left:22px}
+#helpBody li{margin:3px 0}
+#helpBody .tbl-wrap{overflow-x:auto;margin:8px 0}
+#helpBody table{border-collapse:collapse;font-size:14px;min-width:100%}
+#helpBody th,#helpBody td{border:1px solid var(--line);padding:5px 8px;text-align:left}
+#helpBody th{background:var(--accent-soft)}
+#helpBody blockquote{margin:10px 0;padding:6px 12px;border-left:4px solid #d08a00;background:var(--input);border-radius:6px}
+#helpBody a{color:var(--accent)}
+#helpBody .instr-panel{margin:28px -4px 4px;padding:4px 14px 14px;border:1px solid var(--line);border-radius:14px;background:var(--input)}
+#helpBody .instr-panel h3{margin-top:14px}
+#helpBody .instr-q{margin:0 0 8px;color:var(--muted);font-size:14px}
+#helpBody .instr-panel .seg button{background:var(--card)}
+#helpBody .instr-panel .seg button[aria-pressed=true]{background:var(--accent)}
+#helpBody .instr{border-top:1px solid var(--line);margin-top:14px;padding-top:2px}
+#helpBody .sources{margin-top:20px;font-size:13px;color:var(--muted)}
+#helpBody .sources summary{cursor:pointer;font-weight:600}
 /* ---------- Print: compact A4 layout modelled on Tukes' example ---------- */
 @page{size:A4;margin:8mm 10mm}
 #print{display:none}
@@ -161,13 +196,16 @@ body.pp #print{display:block;width:190mm;margin:0 auto}
 #print .p-sl{flex:0 0 28mm;padding:.6mm 1.2mm;border-right:1px solid #000}
 #print .p-sr{flex:1;min-width:0}
 #print .p-sr>:last-child,#print .p-sr .p-row:last-child>.p-box{border-bottom:0}
-#print .p-foot{font-size:6pt;color:#555;margin-top:1.5mm;display:flex;justify-content:space-between}
+#print .p-foot{font-size:6pt;color:#555;margin-top:1.5mm;display:flex;justify-content:flex-end}
 </style>
 </head>
 <body>
 <main>
-  <div class="intro"><h1>Ibruktagningsprotokoll</h1><div class="muted">Enligt Tukes modell</div></div>
-  <p class="legend">Obligatoriska uppgifter enligt förordning 1434/2016 § 4 och SFS 6000-6 är märkta <span class="reqtag">Krävs</span> eller med <span class="req">*</span>.</p>
+  <div class="intro">
+    <h1>Ibruktagningsprotokoll</h1>
+    <button class="help-btn" type="button" data-help="intro">Innan du börjar mäta</button>
+  </div>
+  <p class="legend">Obligatoriska uppgifter enligt standarden är märkta <span class="reqtag">Krävs</span> eller med <span class="req">*</span>.</p>
   <div class="notice" id="notice" role="status" hidden>
     <button class="notice-x" type="button" id="noticeClose" aria-label="Stäng">×</button>
     <strong>Okända uppgifter i länken</strong>
@@ -198,9 +236,331 @@ body.pp #print{display:block;width:190mm;margin:0 auto}
     </div>
   </div>
 </dialog>
+<dialog id="helpDlg" aria-labelledby="helpTitle">
+  <div class="dlg-head"><h2 id="helpTitle">Hjälp</h2><button class="x" type="button" id="helpClose" aria-label="Stäng">×</button></div>
+  <div id="helpBody"></div>
+</dialog>
 <div class="toast" id="toast"></div>
 <div id="print" aria-hidden="true"></div>
 
+<!-- ---------------------------------------------------------------
+     HELP TEXTS (Markdown, Swedish, written for ~16-year-old students)
+     Split at runtime by "## " headings: "## Innan du börjar", "## N. …" (form section N),
+     "## Källor"; instrument blocks: text before the first "## " plus "## Nollställ…" and
+     "## Felkoder" go into "Innan du börjar mäta", "## N. …" into section N.
+     Teacher note: limit values come from the standards SFS 6000-6 is based on and from
+     D1-2017 tables 41.4a/41.5; check them against the school's edition of SFS 6000.
+---------------------------------------------------------------- -->
+<script type="text/markdown" id="md-general">
+## Innan du börjar
+
+Mätningarna visar det som ögat inte ser: att skyddsjorden är ansluten, att isoleringen håller, och att skydden
+löser ut snabbt nog.
+
+**Mät i den här ordningen:**
+
+**Spänningslöst**
+
+1. Sensorisk inspektion
+2. Skyddsledarens kontinuitet
+3. Isolationsresistans
+
+**Med spänning**, först när 2 och 3 är godkända:
+
+4. Automatisk frånkoppling (slingimpedans)
+5. Jordfelsbrytare
+6. Rotationsriktning och funktionstester
+
+**Säkerhet:** bryt, lås och kontrollera att det är spänningslöst. Rör vid instrumentets beröringsplatta innan
+tester med spänning. Om varningssymbolen tänds ska du stoppa och fråga läraren.
+
+---
+
+## 1. Sensorisk inspektion
+
+**Varför?** Många fel syns innan du mäter: lösa skruvar, skadade kablar, kåpor som saknas, fel säkring.
+
+**Kontrollera:** att inga spänningsförande delar går att röra, att kablarna är hela och fastsatta, att ledarna
+har rätt färg (gulgrön PE, blå N), att skydden passar kablarna, att centralen är märkt, och att det finns
+jordfelsbrytare där det krävs.
+
+---
+
+## 2. Skyddsledarens kontinuitet
+
+**Varför?** Om en apparat får fel leder skyddsjorden (PE) bort felströmmen, så att säkringen löser ut. Om PE är
+bruten blir apparatens metallhölje strömförande.
+
+**Vad testar vi?** Att PE hänger ihop hela vägen från centralens PE-skena till varje uttag och apparat.
+
+**Godkänt:** högst **1 Ω** i små installationer.
+
+---
+
+## 3. Isolationsresistans
+
+**Varför?** Skadad isolering (spik, klämd kabel, fukt) läcker ström. Det kan ge elchock eller brand.
+
+**Vad testar vi?** Vi lägger 500 V likspänning mellan ledarna och PE och mäter hur bra isoleringen är, i MΩ.
+
+**Före mätningen:** koppla bort elektronik (dimrar, rörelsevakter, LED-drivdon, överspänningsskydd) och slå
+till alla brytare. Återställ allt efteråt.
+
+**Godkänt:** minst **1 MΩ** vid 500 V (installationer på 230/400 V). En ny installation ger oftast över
+100 MΩ.
+
+---
+
+## 4. Automatisk frånkoppling (slingimpedans)
+
+**Varför?** Vid ett jordfel måste säkringen lösa ut snabbt. Det gör den bara om felströmmen är stor, och
+felströmmen blir stor bara om impedansen i felslingan är låg.
+
+**Vad testar vi?** Slingimpedansen Zₖ (fas → PE → tillbaka till transformatorn). Instrumentet räknar ut
+felströmmen Iₖ. Mät i centralen och i den punkt i varje grupp som ligger längst bort.
+
+**Godkänt:** den uppmätta felströmmen Iₖ ska vara **minst** värdet i tabellen. Gruppledningar ska lösa ut inom
+**0,4 s**, matarkablar till centraler inom **5 s**.
+
+| Iₙ (A) | B | C | gG 0,4 s | gG 5 s |
+|---|---|---|---|---|
+| 6 | 37,5 | 75 | 58,2 | 35 |
+| 10 | 62,5 | 125 | 102,5 | 58,2 |
+| 13 | 81,3 | 162,5 | – | – |
+| 16 | 100 | 200 | 137,5 | 81,3 |
+| 20 | 125 | 250 | 181,3 | 106,3 |
+| 25 | 156,3 | 312,5 | 225 | 137,5 |
+| 32 | 200 | 400 | 337,5 | 187,5 |
+
+Värdena är i ampere. De är skyddets minsta utlösningsström × 1,25, för att ge marginal för mätfel. För B och C
+gäller samma värde vid 0,4 s och 5 s. gG-säkringar finns inte i storleken 13 A.
+
+*Exempel:* R9 har en C10 och fick Iₖ = 199 A. Kravet är 125 A, så det är godkänt.
+
+---
+
+## 5. Jordfelsbrytare
+
+**Varför?** Jordfelsbrytaren är det sista skyddet för människor. Den slår ifrån om ström läcker ut, till exempel
+genom en människa, redan vid cirka 30 mA.
+
+**Vad testar vi?** Att den inte löser ut i onödan, men löser ut snabbt vid fel.
+
+**Godkänt** för en jordfelsbrytare av typ A, 30 mA (inte fördröjd):
+
+| Test | Krav |
+|---|---|
+| ½ × IΔn = 15 mA | Löser **inte** ut |
+| 1 × IΔn = 30 mA | Inom **300 ms** |
+| 5 × IΔn = 150 mA | Inom **40 ms** |
+| Ramptest, växelström | Löser ut vid **15–30 mA** |
+| Ramptest, halvvåg | Löser ut vid **10,5–42 mA** |
+
+Strömmen där brytaren löser ut i ramptestet skrivs i protokollets kolumn IΔn.
+
+Tryck också på brytarens testknapp (T).
+
+---
+
+## 6. Rotationsriktning och funktionstester
+
+**Varför?** Om två faser är förväxlade snurrar trefasmotorer åt fel håll. Funktionstestet visar att allt
+fungerar som det ska.
+
+**Vad testar vi?** Att fasföljden är rätt (123) i centralen och i 3-fasuttagen. Att brytare, styrningar,
+nödstopp och maskiner fungerar.
+
+---
+
+## Källor
+
+- Fluke 1662/1663/1664 FC Users Manual, Rev. 2 (10/22), och Beha-Amprobe Telaris ProInstall-100/200 Users
+  Manual (7/2013): mätmetoderna.
+- Finskspråkigt Fluke-dokument om SFS 6000-6, enligt sökresultat: testordning och gränser för
+  isolationsresistans.
+- Tukes modellprotokoll: exemplet med R9.
+- [Sähköalan taulukot ja kaavat (Wikibooks)](https://fi.wikibooks.org/wiki/S%C3%A4hk%C3%B6alan_taulukot_ja_kaavat),
+  tabell 41.4a och 41.5 (D1-2017 s. 93–94): kraven på felström för B, C och gG.
+- Jordfelsbrytare typ A, 30 mA: utlösningstider enligt tillverkarnas datablad (EN/IEC 61008-1), och
+  utlösningsström 10,5–42 mA enligt Fluke. **Ska kontrolleras mot SFS 6000.**
+</script>
+<script type="text/markdown" id="md-fluke" data-name="Fluke 166x">
+Stegen följer Fluke 1662/1663/1664 FC Users Manual (Rev. 2, 10/22).
+
+**Uttagen på instrumentet:** L/L1 = **röd**, PE/L2 = **grön**, N/L3 = **blå**.
+
+**Beröringsplattan:** den sitter runt TEST-knappen. Rör vid den före tester med spänning. Om varningssymbolen
+tänds finns det spänning på PE. Stoppa då.
+
+---
+
+## Nollställ (compa) mätsladdarna
+
+Gör det här före kontinuitet (RLO) och slingimpedans (ZI).
+
+1. Vrid ratten till **RLO** eller **ZI**.
+2. Anslut sladdarna, eller mätsladden med stickpropp, till nollställningsadaptern (zero adapter).
+3. Nollställ (compa): håll in **nollställningsknappen** i 2–6 sekunder, tills nollsymbolen och värdet visas och det piper.
+
+Nollvärdet sparas även när instrumentet är avstängt. Gör om det om du byter sladdar. Om displayen visar mer än
+3,0 Ω är sladdarna inte rätt anslutna, eller så är de skadade.
+
+---
+
+## 2. Kontinuitet (RLO): spänningslöst
+
+1. Vrid ratten till **RLO**.
+2. Använd **röd (L) och grön (PE)**. På 1663/1664 FC väljer du sladdpar med knappen för ingångsval.
+3. Välj testström **250 mA** och polaritet **±**.
+4. Nollställ (compa) sladdarna om du inte redan har gjort det (se *Innan du börjar mäta*).
+5. Anslut mellan PE-skenan i centralen och PE i punkten du mäter.
+6. Håll in **TEST** tills värdet är stabilt.
+
+Om kretsen har spänning stoppas testet, och spänningen visas i den lilla displayen.
+
+## 3. Isolationsresistans (RISO): spänningslöst
+
+1. Vrid ratten till **RISO**.
+2. Använd **röd (L) och grön (PE)**. På 1664 FC väljer du sladdpar med ingångsvalet.
+3. Välj testspänning **500 V**.
+4. 1664 FC: slå på **Safety Pretest** om du vill. Den stoppar testet om en apparat är ansluten. Den kräver att L,
+   N och PE är rätt anslutna.
+5. Håll in **TEST** tills värdet är stabilt och det piper. Stora displayen visar MΩ. Lilla displayen visar den
+   verkliga testspänningen, som ska vara minst den valda.
+
+## 4. Slingimpedans (ZI): med spänning
+
+1. Vrid ratten till **ZI No Trip**. Den löser inte ut jordfelsbrytare.
+   **ZI Hi Current** får bara användas om kretsen saknar jordfelsbrytare.
+2. Välj **L-PE** och nollställ (compa) sladdarna (se *Innan du börjar mäta*).
+3. Anslut alla tre sladdarna till L, PE och N, eller stick in mätsladden i uttaget.
+4. Rör vid beröringsplattan och tryck sedan på **TEST**. Det tar några sekunder.
+5. Stora displayen visar **Zₖ** (Ω) och lilla displayen **Iₖ** (A eller kA).
+
+Om displayen visar 0,00 Ω ska du kontrollera anslutningarna, att du har nollställt (compat) sladdarna, och säkringen.
+
+## 5. Jordfelsbrytare (ΔT): med spänning
+
+Enklast är **Auto-läget**:
+
+1. Vrid ratten till **ΔT**.
+2. Välj märkström, oftast **30 mA**.
+3. Välj multiplikator **Auto**.
+4. Välj typ efter texten på brytaren:
+   - **AC**: vanlig.
+   - **A**: halvvåg. Används också för typ F, G, K och R.
+   - **S**: fördröjd.
+   - **B**: ren likström. Finns bara på 1663 och 1664 FC, och kräver alla tre sladdarna.
+5. Anslut L och PE, eller mätsladden i ett uttag efter brytaren.
+6. Tryck på **TEST**. Instrumentet testar ½×, 1× och 5×, i både 0° och 180°. **Återställ brytaren** varje gång den
+   löser ut.
+7. Bläddra bland resultaten med pilknapparna. En bock vid jordfelssymbolen betyder godkänd tid.
+
+Vill du mäta **utlösningsströmmen** vrider du ratten till **IΔN** (ramptest). Välj märkström, typ och fas, och tryck
+på **TEST**.
+
+## 6. Fasföljd: med spänning
+
+1. Vrid ratten till **fasföljd**.
+2. Anslut **L1 → röd (L)**, **L2 → grön (PE)** och **L3 → blå (N)**.
+3. Läs av:
+   - **123** betyder rätt fasföljd.
+   - **321** betyder omvänd. Två faser är förväxlade.
+   - **---** betyder för låg spänning. Kontrollera anslutningarna.
+</script>
+<script type="text/markdown" id="md-beha" data-name="ProInstall-100">
+Stegen följer Beha-Amprobe Telaris ProInstall-100/200 Users Manual (7/2013).
+
+**Uttagen på instrumentet:** L = **röd**, PE = **grön**, N = **blå**.
+
+**Knapparna F1–F4** byter inställning. Vad de gör beror på ratt-läget, se varje mätning nedan.
+
+**Beröringsplattan:** den sitter runt TEST-knappen. Rör vid den före tester med spänning. Om symbolen ovanför
+plattan tänds är det över 100 V mellan dig och PE. Stoppa då.
+
+> **Obs!** ProInstall-100 kan **inte** testa jordfelsbrytare av **typ B**. Det kan bara ProInstall-200. Den kan
+> inte heller mäta jordtagsresistans.
+
+---
+
+## 2. Kontinuitet (RLO): spänningslöst
+
+1. Vrid ratten till **RLO**.
+2. Använd **röd (L) och grön (PE)**.
+3. **Nollställ (compa) sladdarna:** koppla ihop sladdarnas spetsar och håll in **F3** tills texten **comp** visas.
+   Värdet sparas även när instrumentet är avstängt. Batterierna ska vara laddade.
+4. Anslut mellan PE-skenan i centralen och PE i punkten du mäter.
+5. Håll in **TEST** tills värdet är stabilt.
+
+Om kretsen har spänning stoppas testet, och spänningen visas i den nedre displayen.
+
+## 3. Isolationsresistans (RISO): spänningslöst
+
+1. Vrid ratten till **RISO**.
+2. Använd **röd (L) och grön (PE)**.
+3. Välj testspänning **500 V** med **F4**. Du kan välja 100, 250, 500 eller 1000 V.
+4. Håll in **TEST** tills värdet är stabilt.
+   - Övre displayen visar resistansen (MΩ).
+   - Nedre displayen visar den verkliga testspänningen (UN). Den ska vara minst den valda.
+
+Om kretsen har spänning går testet inte att starta.
+
+## 4. Slingimpedans (ZI): med spänning
+
+1. Vrid ratten till **ZI No Trip**. Den löser inte ut jordfelsbrytare.
+   **ZI Hi Current** får bara användas om kretsen saknar jordfelsbrytare.
+2. Anslut alla tre sladdarna till L, PE och N på instrumentet. Använd bara de **kalibrerade sladdarna** som följer
+   med: deras resistans dras av automatiskt.
+3. Välj **L-PE** med **F1**.
+4. Anslut till L, PE och N i installationen, eller stick in mätsladden i uttaget.
+5. Rör vid beröringsplattan och tryck sedan på **TEST**. Det tar några sekunder.
+6. Övre displayen visar **Zₖ** (Ω), och nedre displayen felströmmen **PSC = Iₖ** (A eller kA).
+
+Om kretsen har en jordfelsbrytare på **10 mA** löser den ut även i No Trip-läget. Fråga läraren hur du gör då.
+
+## 5. Jordfelsbrytare (ΔT): med spänning
+
+Enklast är **Auto-läget**:
+
+1. Stick in instrumentet i ett uttag efter jordfelsbrytaren.
+2. Vrid ratten till **jordfelsbrytare, utlösningstid (ΔT)**.
+3. Välj märkström med **F1**, oftast **30 mA**.
+4. Välj **Auto** med **F2**.
+5. Välj typ efter texten på brytaren med **F3**:
+   - **AC**: vanlig.
+   - **A**: halvvåg.
+   - **S**: fördröjd AC eller A.
+6. Tryck på **TEST**. Instrumentet testar ½×, 1× och 5×, i både 0° och 180°. **Återställ brytaren** varje gång den
+   löser ut.
+7. Bläddra bland resultaten med pilknapparna. Det första som visas är det sista testet (5×).
+
+Resultaten finns bara i ett tillfälligt minne. Om du vill spara dem måste varje resultat sparas för sig.
+
+**Ett test i taget (utan Auto):** välj märkström med F1, multiplikator med F2 (oftast **x1**), typ med F3 och fas
+med F4 (0° eller 180°). Testa båda faserna. Tryck på **TEST**. Övre displayen visar tiden.
+
+**Utlösningsström (ramptest):** vrid ratten till **jordfelsbrytare, utlösningsström (IΔN)**. Välj märkström med
+F1, typ med F2 och fas med F4. Tryck på **TEST**. Strömmen ökar tills brytaren löser ut.
+
+## 6. Fasföljd: med spänning
+
+1. Vrid ratten till **fasföljd**.
+2. Anslut **L1 → röd (L)**, **L2 → grön (PE)** och **L3 → blå (N)**.
+3. Läs av den övre displayen:
+   - **123** betyder rätt fasföljd.
+   - **321** betyder omvänd. Två faser är förväxlade.
+   - **---** betyder för låg spänning. Kontrollera anslutningarna.
+
+---
+
+## Felkoder
+
+| Visas | Betyder | Gör så här |
+|---|---|---|
+| Err 2 | Instrumentet är för varmt | Vänta tills det har svalnat |
+| Err 4 | För hög felspänning | Kontrollera installationen, särskilt spänningen mellan N och PE |
+| Err 1 | Självtestet misslyckades | Lämna instrumentet till läraren |
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
 'use strict';
@@ -463,22 +823,40 @@ function renderField(f){
   }
 }
 function rowFilled(f,r){return f.cols.some(c=>S[`${f.k}.${r}.${c.k}`])}
-function renderRow(f,r){
+function renderRow(f,r,onRemove){
   const fixed=f.fixed&&f.fixed[r];
   const cells=f.cols.filter(c=>!(c.labelCol&&fixed)).map(c=>renderField({...c,k:`${f.k}.${r}.${c.k}`,
     label:c.unit?`${c.label} (${c.unit})`:c.label,unit:null}));
   return el('div',{class:'trow'},
     fixed||!f.noRowLabel?el('div',{class:'trow-h',text:fixed||`${f.rowLabel||'Rad'} ${r+1}`}):null,
+    onRemove?el('button',{type:'button',class:'row-del','aria-label':'Ta bort raden',title:'Ta bort raden',
+      text:'✕',onclick:onRemove}):null,
     el('div',{class:'grid tgrid'},cells));
 }
 function renderTable(f){
   let n=f.min;for(let r=0;r<f.max;r++)if(rowFilled(f,r))n=Math.max(n,r+1);
   ROWS[f.k]=n;
-  const rows=el('div',{});for(let r=0;r<n;r++)rows.append(renderRow(f,r));
+  const fixedLen=f.fixed?f.fixed.length:0;
+  const rows=el('div',{});
   const add=el('button',{type:'button',class:'btn tbl-add',text:'+ Lägg till rad'});
-  const upd=()=>{add.disabled=ROWS[f.k]>=f.max};upd();
-  add.addEventListener('click',()=>{if(ROWS[f.k]>=f.max)return;
-    const row=renderRow(f,ROWS[f.k]++);rows.append(row);upd();row.querySelector('input,textarea')?.focus()});
+  // Rows can be removed down to the table's minimum; fixed rows (e.g. "Central") never.
+  const draw=()=>{
+    rows.textContent='';
+    for(let r=0;r<ROWS[f.k];r++)
+      rows.append(renderRow(f,r,ROWS[f.k]>f.min&&r>=fixedLen?()=>removeRow(r):null));
+    fill(rows);add.disabled=ROWS[f.k]>=f.max;
+  };
+  const removeRow=r=>{
+    if(rowFilled(f,r)&&!confirm('Raden innehåller uppgifter som kommer att raderas. Vill du ta bort raden?'))return;
+    for(let i=r;i<f.max;i++)for(const c of f.cols){
+      const to=`${f.k}.${i}.${c.k}`,from=`${f.k}.${i+1}.${c.k}`;
+      if(i+1<f.max&&S[from])S[to]=S[from];else delete S[to];
+    }
+    ROWS[f.k]--;draw();changed();
+  };
+  add.addEventListener('click',()=>{if(ROWS[f.k]>=f.max)return;ROWS[f.k]++;draw();
+    rows.lastElementChild.querySelector('input,textarea')?.focus()});
+  draw();
   return el('div',{},rows,add);
 }
 function render(){
@@ -486,15 +864,18 @@ function render(){
   for(const s of SECTIONS){
     const open=s.id in openState?openState[s.id]:!!s.open;
     const d=el('details',{class:'sec','data-s':s.id,open},
-      el('summary',{},el('span',{class:'num',text:s.n}),el('span',{class:'ttl'},s.title,el('span',{class:'badge'})),s.req?el('span',{class:'reqtag',text:'Krävs'}):null),
+      el('summary',{},el('span',{class:'num',text:s.n}),el('span',{class:'ttl'},s.title,el('span',{class:'badge'})),
+        s.req?el('span',{class:'reqtag',text:'Krävs'}):null,
+        /^[1-6]$/.test(s.n)?el('button',{type:'button',class:'help-icon','data-help':s.n,
+          'aria-label':`Hjälp: ${s.title}`,title:'Hjälp',text:'?'}):null),
       el('div',{class:'body'},s.fields.map(renderField)));
     d.addEventListener('toggle',()=>{openState[s.id]=d.open;lsSet(LS_OPEN,JSON.stringify(openState))});
     form.append(d);
   }
   fill();updateBadges();
 }
-function fill(){
-  document.querySelectorAll('[data-k]').forEach(e=>{
+function fill(root=document){
+  root.querySelectorAll('[data-k]').forEach(e=>{
     const v=S[e.dataset.k];
     if(e.tagName==='BUTTON')e.setAttribute('aria-pressed',String(+e.dataset.v===v));
     else if(e.type==='checkbox')e.checked=!!v;
@@ -618,7 +999,6 @@ function renderPrint(){
       sideLayout?pSide(s.fields):pFields(s.fields));
   })));
   root.append(el('div',{class:'p-foot'},
-    el('span',{text:'Upprättat enligt Tukes modell för ibruktagningsprotokoll'}),
     el('span',{text:'Utskrivet '+new Date().toLocaleDateString('fi-FI')})));
 }
 addEventListener('beforeprint',renderPrint);
@@ -664,6 +1044,111 @@ document.getElementById('copyBtn').onclick=async()=>{
 document.getElementById('nativeShareBtn').onclick=()=>{
   const t=[S['g.on'],S['g.oc']].filter(Boolean).join(' – ');
   navigator.share({title:'Ibruktagningsprotokoll'+(t?' '+t:''),url:shareUrl()}).catch(()=>{})};
+
+/* ---------------------------------------------------------------
+   HELP: renders the Markdown blocks (#md-general, #md-fluke, #md-beha) in a modal
+---------------------------------------------------------------- */
+const escH=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const mdInline=t=>escH(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\*(.+?)\*/g,'<i>$1</i>')
+  .replace(/\[(.+?)\]\((https?:[^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+const LI=/^\s*([-*]|\d+\.)\s/;
+function mdList(block){
+  const ind=s=>s.match(/^\s*/)[0].length,base=ind(block[0]);
+  const ordered=/^\s*\d+\./.test(block[0]),start=parseInt(block[0].trim(),10);
+  const items=[];let cur=null;
+  for(const l of block){
+    if(ind(l)===base&&LI.test(l)){cur={text:l.trim().replace(/^([-*]|\d+\.)\s+/,''),sub:[]};items.push(cur)}
+    else if(ind(l)>base&&(LI.test(l)||cur.sub.length))cur.sub.push(l);
+    else cur.text+=' '+l.trim();
+  }
+  const tag=ordered?'ol':'ul';
+  return `<${tag}${ordered&&start!==1?` start="${start}"`:''}>`+
+    items.map(it=>`<li>${mdInline(it.text)}${it.sub.length?mdList(it.sub):''}</li>`).join('')+`</${tag}>`;
+}
+function md(src){
+  const L=src.split('\n');let h='',i=0;
+  while(i<L.length){
+    const l=L[i];let m;
+    if(!l.trim()||/^---+\s*$/.test(l)){i++;continue}
+    if((m=l.match(/^(#{2,4})\s+(.*)/))){const n=m[1].length+1;h+=`<h${n}>${mdInline(m[2])}</h${n}>`;i++;continue}
+    if(l.startsWith('|')){
+      const rows=[];while(i<L.length&&L[i].startsWith('|'))rows.push(L[i++]);
+      const cells=r=>r.trim().replace(/^\||\|$/g,'').split('|').map(c=>c.trim());
+      h+='<div class="tbl-wrap"><table><thead><tr>'+cells(rows[0]).map(c=>`<th>${mdInline(c)}</th>`).join('')+
+        '</tr></thead><tbody>'+rows.slice(2).map(r=>'<tr>'+cells(r).map(c=>`<td>${mdInline(c)}</td>`).join('')+'</tr>').join('')+
+        '</tbody></table></div>';continue}
+    if(l.startsWith('>')){const b=[];while(i<L.length&&L[i].startsWith('>'))b.push(L[i++].replace(/^>\s?/,''));
+      h+='<blockquote>'+md(b.join('\n'))+'</blockquote>';continue}
+    if(LI.test(l)){const b=[];while(i<L.length&&L[i].trim()&&(LI.test(L[i])||/^\s+\S/.test(L[i])))b.push(L[i++]);
+      h+=mdList(b);continue}
+    const p=[];while(i<L.length&&L[i].trim()&&!/^(#{2,4}\s|\||>|---)/.test(L[i])&&!LI.test(L[i]))p.push(L[i++].trim());
+    h+=`<p>${mdInline(p.join(' '))}</p>`;
+  }
+  return h;
+}
+/* Split a document into {pre, sections:{key:{title,body}}}; key = section number or slug */
+function splitDoc(src){
+  const parts=src.split(/^## /m),pre=parts.shift(),sections={};
+  for(const p of parts){
+    const nl=p.indexOf('\n'),head=p.slice(0,nl).trim(),body=p.slice(nl+1);
+    const m=head.match(/^(\d+)\.\s*(.*)/);
+    const key=m?m[1]:/^innan/i.test(head)?'intro':/^k[äa]llor/i.test(head)?'sources':/^nollst/i.test(head)?'zero':/^felkod/i.test(head)?'errors':head;
+    sections[key]={title:m?m[2]:head,body};
+  }
+  return {pre,sections};
+}
+const HELP={general:null,instr:{}};
+function loadHelp(){
+  if(HELP.general)return;
+  HELP.general=splitDoc(document.getElementById('md-general').textContent);
+  for(const id of ['beha','fluke']){const e=document.getElementById('md-'+id);
+    HELP.instr[id]={name:e.dataset.name,...splitDoc(e.textContent)}}
+}
+const LS_INSTR='ibp.instr';
+let helpKey='intro';
+function instrHtml(id,key){
+  const d=HELP.instr[id];
+  if(key==='intro'){
+    let h=md(d.pre);
+    for(const k of ['zero','errors'])if(d.sections[k])h+=`<h4>${mdInline(d.sections[k].title)}</h4>`+md(d.sections[k].body);
+    return h;
+  }
+  const s=d.sections[key];
+  return s?`<h4>${mdInline(s.title)}</h4>`+md(s.body):'';
+}
+function renderHelp(){
+  loadHelp();
+  const key=helpKey,g=HELP.general.sections[key];
+  const sec=SECTIONS.find(s=>s.n===key);
+  document.getElementById('helpTitle').textContent=key==='intro'?'Innan du börjar mäta':`${key}. ${sec?sec.title:g.title}`;
+  const body=document.getElementById('helpBody');
+  let h=g?md(g.body):'';
+  const ids=Object.keys(HELP.instr).filter(id=>instrHtml(id,key));
+  if(ids.length){
+    let cur=lsGet(LS_INSTR);if(!ids.includes(cur))cur=ids[0];
+    h+=`<section class="instr-panel"><h3>${key==='intro'?'Ditt instrument':'Så här mäter du'}</h3>`+
+      `<p class="instr-q">Vilket instrument använder du?</p><div class="seg" role="group" aria-label="Instrument">`+
+      ids.map(id=>`<button type="button" data-instr="${id}" aria-pressed="${id===cur}">${escH(HELP.instr[id].name)}</button>`).join('')+
+      `</div><div class="instr">${instrHtml(cur,key)}</div></section>`;
+  }
+  if(key==='intro'&&HELP.general.sections.sources)
+    h+=`<details class="sources"><summary>Källor</summary>${md(HELP.general.sections.sources.body)}</details>`;
+  body.innerHTML=h;
+}
+function openHelp(key){
+  helpKey=key;renderHelp();
+  const dlg=document.getElementById('helpDlg');
+  document.getElementById('helpBody').scrollTop=0;
+  dlg.showModal();
+}
+document.getElementById('helpBody').addEventListener('click',e=>{
+  const b=e.target.closest('[data-instr]');if(!b)return;
+  lsSet(LS_INSTR,b.dataset.instr);renderHelp();
+});
+document.getElementById('helpClose').onclick=()=>document.getElementById('helpDlg').close();
+document.getElementById('helpDlg').addEventListener('click',e=>{if(e.target.id==='helpDlg')e.target.close()});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-help]');if(!b)return;
+  e.preventDefault();openHelp(b.dataset.help)});
 
 /* Notice for values the form doesn't know (from links made with another version of the form).
    They are never put into S, so saves and prints leave them out. */
