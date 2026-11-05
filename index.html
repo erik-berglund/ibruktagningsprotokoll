@@ -43,7 +43,6 @@ details.sec>summary .num{flex:none;width:28px;height:28px;border-radius:8px;back
   color:var(--accent);display:grid;place-items:center;font-size:14px}
 details.sec>summary .ttl{flex:1;font-size:15px;line-height:1.25}
 details.sec>summary .badge{display:block;font-size:12px;font-weight:500;color:var(--muted)}
-details.sec>summary .badge:empty{display:none}
 details.sec>summary .badge.has{color:var(--ok)}
 details.sec>summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--muted);
   border-bottom:2px solid var(--muted);transform:rotate(45deg);margin:0 4px 4px 2px;transition:transform .15s}
@@ -161,7 +160,7 @@ body.pp #print{display:block;width:190mm;margin:0 auto}
 <body>
 <main>
   <div class="intro"><h1>Ibruktagningsprotokoll</h1><div class="muted">Enligt Tukes modell</div></div>
-  <p class="legend"><span class="req">*</span> och <span class="reqtag">Krävs</span> = obligatoriskt enligt förordning 1434/2016 § 4 och SFS 6000-6 (vår tolkning).</p>
+  <p class="legend">Obligatoriska uppgifter enligt förordning 1434/2016 § 4 och SFS 6000-6 är märkta <span class="reqtag">Krävs</span> eller med <span class="req">*</span>.</p>
   <form id="form" autocomplete="off" onsubmit="return false"></form>
   <div class="foot">
     <button class="btn primary wide" type="button" id="shareBtn">Dela / QR-kod</button>
@@ -465,7 +464,7 @@ function updateBadges(){
   for(const s of SECTIONS){
     const n=SECKEYS[s.id].filter(k=>S[k]).length;
     const b=document.querySelector(`details[data-s="${s.id}"] .badge`);
-    b.textContent=n?`${n} ifyllda`:'';b.classList.toggle('has',n>0);
+    b.textContent=n?`${n} ifyllda`:'Inte påbörjad';b.classList.toggle('has',n>0);
   }
 }
 
