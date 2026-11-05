@@ -1,0 +1,6 @@
+# Local / OS files
+.DS_Store
+.claude/settings.local.json
+
+# Filled-in protocols (PDF/printouts, saved links) contain real people's details. Never commit them.
+*.pdf

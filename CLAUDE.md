@@ -1,0 +1,38 @@
+# Ibruktagningsprotokoll: notes for AI assistants (Claude, Copilot, Codex, etc.)
+
+A mobile-first, client-only web form for Finnish commissioning inspection records of electrical installations.
+Students at Axxell fill it in on their phones.
+
+## ⚠️ Rule #1: never put personal data (PII) in git or on GitHub
+
+A filled-in protocol contains real people's names, phone numbers, e-mail addresses and street addresses. That
+data lives only in the user's browser and in share links (the `#…` part of the URL).
+
+- Never commit, paste or upload real share links or their `#` payloads, printouts or PDFs of filled-in
+  protocols. `*.pdf` is gitignored.
+- Use made-up data in tests, examples and commit messages, for example the data from Tukes' public example
+  ("Oy Sähkö Ab", "Ville Virtanen").
+- Never add analytics, logging or anything else that sends form data to a server.
+
+## How it works
+
+- `index.html` is the whole app (HTML, CSS and JS, no build step). The QR library (qrcode-generator 1.4.4) is
+  loaded from cdnjs.
+- `SECTIONS` is the schema. Field helpers: `T` (text; `type` can be `num`, `tel`, `email`, `date` or `area`),
+  `C` (checkbox), `R` (choice), `G` (side-by-side grid), `H` (sub-heading), `N` (note), `TBL` (repeating table
+  rows with `min`, `max`, `fixed` and `cols`). Options: `req` (red * marker), `showIf:[key,value]`,
+  `screenOnly`, `span` (table column width out of 4), and `printLabel` / `printSign` for print.
+- **Link format:** `#` plus a one-letter prefix (`A` = raw, `B` = deflate-raw) plus base64url of
+  `[FORMAT_VERSION][varint bitset length][bitset of checkboxes and choices][(gap, length, UTF-8)* for non-empty
+  strings]`. Positions come from walking the schema in order, with table cells expanded to `max` rows. Any
+  change to field order, field count or table `max` changes the format: bump `FORMAT_VERSION`.
+- State: `S` (key → value). It's saved to `localStorage['ibp.v1']` and the URL hash. A replaced draft goes to
+  `ibp.backup`, and open/closed sections are in `ibp.open`.
+- Print: `renderPrint()` builds a separate `#print` DOM (a Tukes-style A4 layout) after every save. Print CSS shows
+  only `#print`. Add `class="pp"` to `body` to preview it on screen. Check that the Tukes example data still
+  fits on one A4 page after changing the layout.
+- Swedish UI text. Keep the wording close to ST 51.21.08 and the Tukes example.
+
+## Local preview
+
+`python3 -m http.server 8780 --bind 127.0.0.1` (port 8765 is used by another project on this machine).

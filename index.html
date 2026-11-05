@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1f5fa8">
+<title>Ibruktagningsprotokoll</title>
+<style>
+:root{
+  --bg:#f2f4f7; --card:#ffffff; --text:#15202b; --muted:#5a6775; --line:#d8dee5;
+  --accent:#1f5fa8; --accent-ink:#ffffff; --accent-soft:#e2ecf8; --ok:#1d7a46;
+  --input:#ffffff; --focus:rgba(31,95,168,.35); --shadow:0 1px 2px rgba(0,0,0,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1319; --card:#17202a; --text:#e5eaf0; --muted:#9aa6b3; --line:#2a3542;
+    --accent:#6aa7ec; --accent-ink:#0a1726; --accent-soft:#1c2c41; --ok:#4cc38a;
+    --input:#10171f; --focus:rgba(106,167,236,.4); --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1319; --card:#17202a; --text:#e5eaf0; --muted:#9aa6b3; --line:#2a3542;
+  --accent:#6aa7ec; --accent-ink:#0a1726; --accent-soft:#1c2c41; --ok:#4cc38a;
+  --input:#10171f; --focus:rgba(106,167,236,.4); --shadow:none;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);
+  font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+.btn{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--text);
+  font:inherit;font-size:15px;padding:10px 14px;border-radius:10px;cursor:pointer;min-height:44px}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+main{max-width:760px;margin:0 auto;padding:12px 12px 0}
+.card,details.sec{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  margin-bottom:10px;box-shadow:var(--shadow)}
+.card{padding:14px}
+details.sec>summary{list-style:none;cursor:pointer;padding:14px;display:flex;align-items:center;gap:10px;
+  font-weight:650;min-height:52px}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary .num{flex:none;width:28px;height:28px;border-radius:8px;background:var(--accent-soft);
+  color:var(--accent);display:grid;place-items:center;font-size:14px}
+details.sec>summary .ttl{flex:1;font-size:15px;line-height:1.25}
+details.sec>summary .badge{display:block;font-size:12px;font-weight:500;color:var(--muted)}
+details.sec>summary .badge:empty{display:none}
+details.sec>summary .badge.has{color:var(--ok)}
+details.sec>summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--muted);
+  border-bottom:2px solid var(--muted);transform:rotate(45deg);margin:0 4px 4px 2px;transition:transform .15s}
+details.sec[open]>summary::after{transform:rotate(-135deg);margin-bottom:-4px}
+.body{padding:0 14px 14px;border-top:1px solid var(--line)}
+h3{font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:18px 0 6px}
+.fld{display:block;margin-top:10px}
+.lbl{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+.req{color:#c0392b;font-weight:700;margin-left:2px}
+.reqtag{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;color:#c0392b;border:1px solid currentColor;border-radius:6px;padding:1px 5px;white-space:nowrap}
+.legend{margin:0 0 10px;font-size:13px;color:var(--muted)}
+.inwrap{display:flex;align-items:center;gap:6px}
+input[type=text],input[type=tel],input[type=email],input[type=date],textarea{
+  width:100%;min-width:0;font:inherit;font-size:16px;color:var(--text);background:var(--input);
+  border:1px solid var(--line);border-radius:10px;padding:10px 11px;min-height:44px}
+textarea{resize:vertical;min-height:72px;field-sizing:content}
+input:focus,textarea:focus,.btn:focus-visible,.seg button:focus-visible{outline:3px solid var(--focus);outline-offset:1px;border-color:var(--accent)}
+.unit{color:var(--muted);font-size:14px;flex:none;min-width:22px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.grid>.wide{grid-column:1/-1}
+.tgrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:0 8px;align-items:end}
+.tgrid .lbl{hyphens:manual;overflow-wrap:anywhere}
+.tgrid>.s2{grid-column:span 2}.tgrid>.s3{grid-column:span 3}.tgrid>.s4{grid-column:1/-1}
+.tgrid input{padding:10px 8px}
+.tgrid .chk{align-self:end;padding:10px 0}
+.chk{display:flex;gap:12px;align-items:flex-start;padding:10px 0;cursor:pointer;line-height:1.35}
+.chk+.chk{border-top:1px dashed var(--line)}
+.chk input{flex:none;width:22px;height:22px;margin:0;accent-color:var(--accent)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1 1 0;min-height:42px;font:inherit;font-size:15px;border:1px solid var(--line);
+  background:var(--input);color:var(--text);border-radius:10px;padding:8px 10px;cursor:pointer}
+.seg.vert{flex-direction:column}
+.seg.vert button{text-align:left}
+.seg button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.item{padding:12px 0;border-bottom:1px solid var(--line)}
+.item:last-of-type{border-bottom:0}
+.item-title{font-weight:600;margin-bottom:8px;display:block}
+.item .fld:first-of-type{margin-top:0}
+.note{font-size:13px;color:var(--muted);margin:10px 0 0}
+.trow{border:1px solid var(--line);border-radius:12px;padding:4px 12px 12px;margin-top:10px}
+.trow-h{font-size:13px;font-weight:650;margin-top:8px}
+.tbl-add{margin-top:10px;width:100%}
+.foot{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.foot .btn{flex:1 1 auto}
+.foot .btn.wide{flex-basis:100%}
+.intro{padding:max(8px,env(safe-area-inset-top)) 2px 12px}
+.intro h1{font-size:22px;margin:0;line-height:1.2}
+.muted{color:var(--muted);font-size:13px}
+dialog{border:0;border-radius:16px;padding:0;width:min(440px,calc(100vw - 24px));background:var(--card);color:var(--text)}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+.dlg{padding:16px}
+.dlg h2{margin:0 0 4px;font-size:18px}
+.qr{background:#fff;border-radius:10px;padding:8px;margin:12px 0;display:grid;place-items:center}
+.qr svg{width:100%;height:auto;max-width:360px;display:block}
+.qrmsg{color:#333;padding:24px;text-align:center}
+.url{font:12px/1.35 ui-monospace,Menlo,monospace;word-break:break-all;color:var(--muted);
+  max-height:4.2em;overflow:hidden;margin:8px 0}
+.dlg .row{display:flex;gap:8px;flex-wrap:wrap}
+.dlg .row .btn{flex:1 1 auto}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);
+  background:var(--text);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;
+  opacity:0;transition:opacity .2s;pointer-events:none;z-index:50}
+.toast.show{opacity:1}
+@media (min-width:640px){
+  main{padding:20px 16px 0}
+}
+/* ---------- Print: compact A4 layout modelled on Tukes' example ---------- */
+@page{size:A4;margin:8mm 10mm}
+#print{display:none}
+@media print{
+  body>*:not(#print){display:none!important}
+  body{background:#fff!important;padding:0}
+  #print{display:block}
+}
+body.pp>*:not(#print){display:none!important}
+body.pp{background:#fff}
+body.pp #print{display:block;width:190mm;margin:0 auto}
+#print{color:#000;background:#fff;font:7.5pt/1.25 Arial,Helvetica,sans-serif;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+#print h1{font-size:11pt;margin:0 0 2mm;letter-spacing:.02em}
+#print .p-frame{border:1px solid #000}
+#print .p-h{font-weight:700;text-transform:uppercase;padding:.4mm 1.2mm;border-bottom:1px solid #000;
+  break-after:avoid;break-inside:avoid;background:#eee}
+#print .p-sec+.p-sec .p-h{border-top:1px solid #000;margin-top:-1px}
+#print .p-row{display:flex;flex-wrap:wrap;margin-right:-1px}
+#print .p-box{flex:1 1 30%;border-right:1px solid #000;border-bottom:1px solid #000;padding:.3mm 1.2mm;min-height:6mm;break-inside:avoid}
+#print .p-box.tall{flex-basis:100%;min-height:7mm}
+#print .p-box.sign{flex-basis:55%;min-height:12mm}
+#print .p-box .l{font-size:6.3pt;color:#333}
+#print .p-box .v{font-size:8.5pt;white-space:pre-wrap;min-height:3.6mm}
+#print .p-checks{display:flex;flex-wrap:wrap;gap:.5mm 5mm;padding:.6mm 1.2mm;border-bottom:1px solid #000;break-inside:avoid}
+#print .p-chl{color:#333}
+#print .p-chl.b{color:#000;font-weight:700}
+#print .p-cnote{margin-left:auto;font-size:6.3pt;color:#333}
+#print .p-chk{display:inline-flex;align-items:center;gap:1.2mm}
+#print .cb{flex:none;width:2.8mm;height:2.8mm;border:1px solid #000;display:inline-grid;place-items:center;font-size:7pt;line-height:1;font-weight:700}
+#print .p-sub{font-weight:700;padding:.6mm 1.2mm 0}
+#print .p-note{font-size:6.5pt;color:#333;padding:.4mm 1.2mm;border-bottom:1px solid #000}
+#print .p-tbl{width:calc(100% + 2px);margin:-1px -1px 0;border-collapse:collapse}
+#print .p-tbl th,#print .p-tbl td{border:1px solid #000;padding:.15mm 1.2mm;text-align:left;vertical-align:top}
+#print .p-tbl th{font-weight:400;font-size:6.3pt;color:#333}
+#print .p-tbl td{font-size:8pt;height:3.6mm}
+#print .p-two{display:flex;margin:-1px -1px 0}
+#print .p-two>.p-tbl{width:calc(50% + .5px);margin:0}
+#print .p-two>.p-tbl+.p-tbl{margin-left:-1px}
+#print .p-tbl td.b{font-weight:700}
+#print .p-tbl tr{break-inside:avoid}
+#print .p-side{display:flex;border-bottom:1px solid #000}
+#print .p-sl{flex:0 0 28mm;padding:.6mm 1.2mm;border-right:1px solid #000}
+#print .p-sr{flex:1;min-width:0}
+#print .p-sr>:last-child,#print .p-sr .p-row:last-child>.p-box{border-bottom:0}
+#print .p-foot{font-size:6pt;color:#555;margin-top:1.5mm;display:flex;justify-content:space-between}
+</style>
+</head>
+<body>
+<main>
+  <div class="intro"><h1>Ibruktagningsprotokoll</h1><div class="muted">Enligt Tukes modell</div></div>
+  <p class="legend"><span class="req">*</span> och <span class="reqtag">Krävs</span> = obligatoriskt enligt förordning 1434/2016 § 4 och SFS 6000-6 (vår tolkning).</p>
+  <form id="form" autocomplete="off" onsubmit="return false"></form>
+  <div class="foot">
+    <button class="btn primary wide" type="button" id="shareBtn">Dela / QR-kod</button>
+    <button class="btn" type="button" id="printBtn">Skriv ut</button>
+    <button class="btn" type="button" id="newBtn">Nytt protokoll</button>
+    <button class="btn" type="button" id="restoreBtn" hidden>Återställ föregående utkast</button>
+  </div>
+  <p class="muted">Allt sparas automatiskt i din webbläsare och i länken. Inga uppgifter skickas till någon server.</p>
+</main>
+
+<dialog id="shareDlg">
+  <div class="dlg">
+    <h2>Dela protokollet</h2>
+    <div class="muted">Skanna QR-koden eller skicka länken. Den innehåller hela protokollet.</div>
+    <div class="qr" id="qrBox"></div>
+    <div class="muted" id="qrStats"></div>
+    <div class="url" id="urlText"></div>
+    <div class="row">
+      <button class="btn primary" type="button" id="copyBtn">Kopiera länk</button>
+      <button class="btn" type="button" id="nativeShareBtn" hidden>Dela…</button>
+      <button class="btn" type="button" id="closeDlg">Stäng</button>
+    </div>
+  </div>
+</dialog>
+<div class="toast" id="toast"></div>
+<div id="print" aria-hidden="true"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+'use strict';
+/* ---------------------------------------------------------------
+   SCHEMA
+   Field order defines the binary encoding. To stay compatible with
+   links already handed out, only ADD fields (anywhere is fine only if
+   you bump FORMAT_VERSION and keep an old decoder). Simplest rule:
+   don't reorder or remove fields once in use.
+---------------------------------------------------------------- */
+const FORMAT_VERSION = 4;
+const T=(k,label,o={})=>({t:'text',k,label,...o});
+const C=(k,label,o={})=>({t:'check',k,label,...o});
+const R=(k,label,opts,o={})=>({t:'choice',k,label,opts,...o});
+const H=text=>({t:'h',text});
+const N=(text,o={})=>({t:'note',text,...o});
+const G=(...fields)=>({t:'grid',fields});
+const TBL=(k,o)=>({t:'table',k,...o});
+const ITEM=(label,fields)=>({t:'item',label,fields});
+const sens=(l,title,extra)=>ITEM(`${l}) ${title}`,[
+  R(`s1.${l}.s`,null,['I skick','Ingår ej']),
+  ...(extra||[T(`s1.${l}.a`,'Anmärkning')])
+]);
+const signer=(p,dLabel='Datering',o={})=>G(T(p+'d',dLabel,{type:'date',...o}),
+  T(p+'n','Namnförtydligande',{...o,printLabel:'Underskrift och namnförtydligande',printSign:true}));
+const REQ={req:true};
+
+/* Structure follows Tukes' example record ("Esimerkki käyttöönottotarkastuspöytäkirjasta"),
+   with Swedish wording from ST 51.21.08. */
+const SECTIONS=[
+ {id:'g',n:'G',title:'Grunduppgifter',req:true,fields:[
+  H('Elanläggningens byggare'),
+  T('g.bf','Företag',REQ),
+  T('g.ba','Adress, postnummer och ort'),
+  H('Ledaren av elarbeten'),
+  G(T('g.ln','Namn',REQ),T('g.lt','Telefonnummer',{type:'tel',req:true})),
+  T('g.le','E-postadress',{type:'email'}),
+  H('Objektuppgifter'),
+  T('g.on','Namn',REQ),
+  G(T('g.oa','Arbetsnummer'),T('g.oc','Central')),
+  T('g.oi','Objektets identifiering',{type:'area'}),
+  T('g.og','Adress, postnummer och ort',REQ)
+ ]},
+ {id:'s1',n:'1',title:'Sensorisk inspektion',req:true,fields:[
+  C('s1.k','Installationerna har vid den sensoriska inspektionen konstaterats uppfylla kraven',REQ)
+ ]},
+ {id:'s2',n:'2',title:'Skyddsledarens kontinuitet',req:true,open:true,fields:[
+  C('s2.a','Kontinuiteten har konstaterats för alla apparater och uttag'),
+  C('s2.k','Kontinuiteten har konstaterats vara kravenlig',REQ),
+  G(T('s2.r','Största resistansen',{type:'num',unit:'Ω'}),T('s2.g','i grupp'))
+ ]},
+ {id:'s3',n:'3',title:'Isolationsresistans',req:true,open:true,fields:[
+  TBL('s3.t',{min:1,max:30,rowLabel:'Mätning',cols:[
+    T('o','Objekt',{span:3,ph:'t.ex. hela installationen'}),T('g','Grupp'),
+    T('r','Rᵢ',{type:'num',unit:'MΩ'}),T('a','Anm.',{span:3})]}),
+  C('s3.k','Isolationsresistanserna har konstaterats vara kravenliga',REQ)
+ ]},
+ {id:'s4',n:'4',title:'Automatisk frånkoppling av matning',req:true,open:true,fields:[
+  TBL('s4.t',{min:2,max:40,noRowLabel:true,fixed:['Central'],cols:[
+    T('g','Grupp / Undercentral',{labelCol:true,span:2,ph:'t.ex. R1'}),T('p','Objekt',{labelCol:true,span:2,ph:'t.ex. spis'}),
+    T('ik','Iₖ',{type:'num',unit:'A'}),T('zk','Zₖ',{type:'num',unit:'Ω'}),
+    T('sa','Skydds\u00ADapparat'),T('in','Iₙ',{type:'num',unit:'A'})]}),
+  N('Skyddsapparat = typ, t.ex. gG eller C. Iₙ = skyddsapparatens märkström.',{screenOnly:true}),
+  R('s4.h','Kortslutningsström och slingimpedans har erhållits genom',['Mätning','Beräkning']),
+  C('s4.jf','Felskyddet har verkställts med jordfelsbrytare'),
+  C('s4.k','Erhållna värden är i enlighet med kraven i standarden',REQ)
+ ]},
+ {id:'s5',n:'5',title:'Jordfelsbrytare',req:true,open:true,fields:[
+  TBL('s5.t',{min:1,max:30,rowLabel:'Jordfelsbrytare',cols:[
+    T('ty','Typ och användningsändamål',{span:3,ph:'t.ex. A TS'}),T('g','Grupp'),
+    T('t','t',{type:'num',unit:'ms'}),T('i','IΔn',{type:'num',unit:'mA'}),
+    C('tk','Testknapp OK',{span:2})]}),
+  N('Användningsändamål: FS = felskydd, TS = tilläggsskydd, BS = brandskydd'),
+  C('s5.k','Funktionerna har konstaterats vara standardenliga',REQ)
+ ]},
+ {id:'s6',n:'6',title:'Rotationsriktning och funktionstester',fields:[
+  H('Kontroll av rotationsriktningen'),
+  C('s6.c','Central'),C('s6.f','3-fasuttag'),
+  H('Funktions- och driftstester'),
+  C('s6.m','Maskiner och apparater'),C('s6.h','Funktionella helheter')
+ ]},
+ {id:'s7',n:'7',title:'EMC-skydd',fields:[
+  C('s7.tn','TN-S-system'),
+  T('s7.x','Annat, vad?'),
+  C('s7.k','Elanläggningen uppfyller kraven i elsäkerhetslagen och statsrådets förordning om elektromagnetisk kompatibilitet (1436/2016)')
+ ]},
+ {id:'s8',n:'8',title:'Drifts-, service- och underhållsanvisningar',fields:[
+  R('s8.v',null,['Överlämnade till beställaren','Inga apparater eller installationer som kräver separata anvisningar'],{vert:true})
+ ]},
+ {id:'s9',n:'9',title:'Tillämpade standarder',req:true,fields:[
+  T('s9.u','Standardhandbok SFS 6000, upplaga',{ph:'t.ex. SFS 6000:2022',req:true}),
+  T('s9.a','och annat, vad?'),
+  C('s9.k','Installationerna har konstaterats vara utförda enligt kraven i ovan nämnda standarder',REQ)
+ ]},
+ {id:'s10',n:'10',title:'Besiktningens utförare',req:true,fields:[
+  signer('s10.','Datum',REQ),
+  T('s10.i','Mätinstrument som använts vid besiktningen',{ph:'t.ex. Fluke 1664 FC'})
+ ]}
+];
+const ALL=SECTIONS;
+
+function walk(fields,fn){
+  for(const f of fields){
+    if(f.t==='table'){
+      for(let r=0;r<f.max;r++) for(const c of f.cols) fn({...c,k:`${f.k}.${r}.${c.k}`});
+    } else if(f.fields) walk(f.fields,fn);
+    else if(f.k) fn(f);
+  }
+}
+const IDX=(()=>{
+  const bools=[],strs=[];
+  for(const s of ALL) walk(s.fields,f=>{
+    if(f.t==='check') bools.push({k:f.k,bits:1});
+    else if(f.t==='choice') bools.push({k:f.k,bits:Math.ceil(Math.log2(f.opts.length+1))});
+    else strs.push(f.k);
+  });
+  const all=[...bools.map(b=>b.k),...strs],dup=all.filter((k,i)=>all.indexOf(k)!==i);
+  if(dup.length)console.error('Dubbla fältnycklar i schemat:',dup);
+  return {bools,strs};
+})();
+
+/* ---------------------------------------------------------------
+   ENCODING: [version][varint bitsetLen][bitset][(gap,len,utf8)*]
+   then deflate-raw if smaller, then base64url. Prefix A=raw B=deflate.
+---------------------------------------------------------------- */
+const te=new TextEncoder(),td=new TextDecoder();
+function varint(out,n){while(n>127){out.push((n&127)|128);n>>>=7}out.push(n)}
+function pack(S){
+  const out=[FORMAT_VERSION],bits=[];let acc=0,n=0;
+  for(const b of IDX.bools){const v=+S[b.k]||0;
+    for(let i=0;i<b.bits;i++){acc|=((v>>i)&1)<<n;if(++n===8){bits.push(acc);acc=0;n=0}}}
+  if(n)bits.push(acc);
+  while(bits.length&&!bits[bits.length-1])bits.pop();
+  varint(out,bits.length);for(const x of bits)out.push(x);
+  let last=-1,any=bits.length>0;
+  IDX.strs.forEach((k,i)=>{const v=S[k];if(!v)return;any=true;const b=te.encode(v);
+    varint(out,i-last-1);varint(out,b.length);for(const x of b)out.push(x);last=i});
+  return any?Uint8Array.from(out):null;
+}
+function unpack(buf){
+  let p=0;const rd=()=>{let n=0,s=0,b;do{b=buf[p++];n|=(b&127)<<s;s+=7}while(b&128);return n>>>0};
+  const ver=buf[p++];if(ver!==FORMAT_VERSION)throw new Error('Okänd version '+ver);
+  const S={},bl=rd(),bits=buf.subarray(p,p+bl);p+=bl;let bi=0;
+  for(const b of IDX.bools){let v=0;for(let i=0;i<b.bits;i++,bi++){
+      if((bits[bi>>3]>>(bi&7))&1)v|=1<<i}
+    if(v)S[b.k]=b.bits===1?true:v}
+  let i=-1;while(p<buf.length){i+=rd()+1;const len=rd();
+    const k=IDX.strs[i];const v=td.decode(buf.subarray(p,p+len));p+=len;if(k)S[k]=v}
+  return S;
+}
+const b64u=b=>{let s='';for(let i=0;i<b.length;i++)s+=String.fromCharCode(b[i]);
+  return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
+const unb64u=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';
+  return Uint8Array.from(atob(s),c=>c.charCodeAt(0))};
+async function through(bytes,stream){
+  return new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer())}
+async function encode(S){
+  const raw=pack(S);if(!raw)return '';
+  let best='A'+b64u(raw);
+  if('CompressionStream' in window){try{
+    const z='B'+b64u(await through(raw,new CompressionStream('deflate-raw')));
+    if(z.length<best.length)best=z}catch(e){}}
+  return best;
+}
+async function decode(code){
+  const t=code[0],bytes=unb64u(code.slice(1));
+  if(t==='A')return unpack(bytes);
+  if(t==='B')return unpack(await through(bytes,new DecompressionStream('deflate-raw')));
+  throw new Error('Okänt format');
+}
+
+/* ---------------------------------------------------------------
+   STATE + STORAGE
+---------------------------------------------------------------- */
+let S={};const ROWS={};
+const LS_KEY='ibp.v1',LS_BAK='ibp.backup',LS_OPEN='ibp.open';
+const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+const lsSet=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}};
+let openState={};try{openState=JSON.parse(lsGet(LS_OPEN)||'{}')}catch(e){}
+let currentCode='';
+
+/* ---------------------------------------------------------------
+   RENDERING
+---------------------------------------------------------------- */
+function el(tag,attrs={},...kids){
+  const e=document.createElement(tag);
+  for(const [a,v] of Object.entries(attrs)){
+    if(v==null||v===false)continue;
+    if(a==='class')e.className=v;else if(a==='text')e.textContent=v;
+    else if(a.startsWith('on'))e.addEventListener(a.slice(2),v);
+    else e.setAttribute(a,v===true?'':v)}
+  for(const k of kids.flat())if(k!=null)e.append(k);
+  return e;
+}
+let uid=0;
+const reqMark=f=>f.req?el('span',{class:'req','aria-label':'obligatoriskt',text:'*'}):null;
+function renderField(f){
+  switch(f.t){
+  case 'h':return el('h3',{text:f.text});
+  case 'note':return el('p',{class:'note',text:f.text});
+  case 'grid':return el('div',{class:'grid'},f.fields.map(renderField));
+  case 'item':return el('div',{class:'item'},el('span',{class:'item-title',text:f.label}),f.fields.map(renderField));
+  case 'table':return renderTable(f);
+  case 'check':return el('label',{class:'chk'+(f.wide?' wide':'')+(f.span?' s'+f.span:'')},
+      el('input',{type:'checkbox','data-k':f.k}),el('span',{},f.label,reqMark(f)));
+  case 'choice':{
+    const seg=el('div',{class:'seg'+(f.vert?' vert':''),role:'group','aria-label':f.label||''},
+      f.opts.map((o,i)=>el('button',{type:'button','data-k':f.k,'data-v':i+1,'aria-pressed':'false',text:o})));
+    return el('div',{class:'fld'},f.label?el('span',{class:'lbl'},f.label,reqMark(f)):null,seg)}
+  default:{
+    const id='f'+(++uid),type=f.type||'text';
+    const attrs={id,'data-k':f.k,placeholder:f.ph||null};
+    let input;
+    if(type==='area')input=el('textarea',{...attrs,rows:3});
+    else if(type==='num')input=el('input',{...attrs,type:'text',inputmode:'decimal'});
+    else input=el('input',{...attrs,type,autocomplete:'off'});
+    return el('div',{class:'fld'+(f.wide?' wide':'')+(f.span?' s'+f.span:''),
+        'data-show-k':f.showIf?.[0],'data-show-v':f.showIf?.[1]},
+      el('label',{class:'lbl',for:id},f.label,reqMark(f)),
+      el('div',{class:'inwrap'},input,f.unit?el('span',{class:'unit',text:f.unit}):null))}
+  }
+}
+function rowFilled(f,r){return f.cols.some(c=>S[`${f.k}.${r}.${c.k}`])}
+function renderRow(f,r){
+  const fixed=f.fixed&&f.fixed[r];
+  const cells=f.cols.filter(c=>!(c.labelCol&&fixed)).map(c=>renderField({...c,k:`${f.k}.${r}.${c.k}`,
+    label:c.unit?`${c.label} (${c.unit})`:c.label,unit:null}));
+  return el('div',{class:'trow'},
+    fixed||!f.noRowLabel?el('div',{class:'trow-h',text:fixed||`${f.rowLabel||'Rad'} ${r+1}`}):null,
+    el('div',{class:'grid tgrid'},cells));
+}
+function renderTable(f){
+  let n=f.min;for(let r=0;r<f.max;r++)if(rowFilled(f,r))n=Math.max(n,r+1);
+  ROWS[f.k]=n;
+  const rows=el('div',{});for(let r=0;r<n;r++)rows.append(renderRow(f,r));
+  const add=el('button',{type:'button',class:'btn tbl-add',text:'+ Lägg till rad'});
+  const upd=()=>{add.disabled=ROWS[f.k]>=f.max};upd();
+  add.addEventListener('click',()=>{if(ROWS[f.k]>=f.max)return;
+    const row=renderRow(f,ROWS[f.k]++);rows.append(row);upd();row.querySelector('input,textarea')?.focus()});
+  return el('div',{},rows,add);
+}
+function render(){
+  const form=document.getElementById('form');form.textContent='';
+  for(const s of SECTIONS){
+    const open=s.id in openState?openState[s.id]:!!s.open;
+    const d=el('details',{class:'sec','data-s':s.id,open},
+      el('summary',{},el('span',{class:'num',text:s.n}),el('span',{class:'ttl'},s.title,el('span',{class:'badge'})),s.req?el('span',{class:'reqtag',text:'Krävs'}):null),
+      el('div',{class:'body'},s.fields.map(renderField)));
+    d.addEventListener('toggle',()=>{openState[s.id]=d.open;lsSet(LS_OPEN,JSON.stringify(openState))});
+    form.append(d);
+  }
+  fill();updateBadges();
+}
+function fill(){
+  document.querySelectorAll('[data-k]').forEach(e=>{
+    const v=S[e.dataset.k];
+    if(e.tagName==='BUTTON')e.setAttribute('aria-pressed',String(+e.dataset.v===v));
+    else if(e.type==='checkbox')e.checked=!!v;
+    else e.value=v||'';
+  });
+  applyConditions();
+}
+/* Fields with showIf:[key,value] are visible only while S[key]===value.
+   Hiding a field clears it, so stale text never ends up in the link. */
+function applyConditions(){
+  document.querySelectorAll('[data-show-k]').forEach(w=>{
+    const show=S[w.dataset.showK]===+w.dataset.showV;
+    w.hidden=!show;
+    if(!show)w.querySelectorAll('[data-k]').forEach(e=>{delete S[e.dataset.k];e.value=''});
+  });
+}
+const SECKEYS=Object.fromEntries(SECTIONS.map(s=>{const ks=[];walk(s.fields,f=>ks.push(f.k));return [s.id,ks]}));
+function updateBadges(){
+  for(const s of SECTIONS){
+    const n=SECKEYS[s.id].filter(k=>S[k]).length;
+    const b=document.querySelector(`details[data-s="${s.id}"] .badge`);
+    b.textContent=n?`${n} ifyllda`:'';b.classList.toggle('has',n>0);
+  }
+}
+
+/* ---------------------------------------------------------------
+   EVENTS
+---------------------------------------------------------------- */
+let saveT;
+function changed(){updateBadges();clearTimeout(saveT);saveT=setTimeout(save,250)}
+async function save(){
+  currentCode=await encode(S);
+  history.replaceState(null,'',location.pathname+location.search+(currentCode?'#'+currentCode:''));
+  lsSet(LS_KEY,currentCode||null);
+  renderPrint();
+}
+const form=document.getElementById('form');
+form.addEventListener('input',e=>{
+  const k=e.target.dataset.k;if(!k)return;
+  const v=e.target.type==='checkbox'?e.target.checked:e.target.value;
+  if(v)S[k]=v;else delete S[k];changed();
+});
+form.addEventListener('click',e=>{
+  const b=e.target.closest('.seg button');if(!b)return;
+  const k=b.dataset.k,v=+b.dataset.v;
+  if(S[k]===v)delete S[k];else S[k]=v;
+  b.parentElement.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(+x.dataset.v===S[k])));
+  applyConditions();
+  changed();
+});
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),1800)}
+/* ---------------------------------------------------------------
+   PRINT: builds a compact, Tukes-style A4 layout from the schema
+---------------------------------------------------------------- */
+const fmtDate=v=>/^\d{4}-\d{2}-\d{2}$/.test(v)?v.split('-').reverse().join('.'):v;
+function pv(f){const v=S[f.k];if(!v)return '';const t=f.type==='date'?fmtDate(v):v;return f.unit?`${t} ${f.unit}`:t}
+const cb=on=>el('span',{class:'cb',text:on?'✕':''});
+const pBox=f=>el('div',{class:'p-box'+(f.type==='area'?' tall':'')+(f.printSign?' sign':'')},
+  el('div',{class:'l',text:f.printLabel||f.label}),el('div',{class:'v',text:pv(f)}));
+function pTable(f){
+  let n=f.min;for(let r=0;r<f.max;r++)if(rowFilled(f,r))n=Math.max(n,r+1);
+  const lc=f.cols.filter(c=>c.labelCol).length;
+  const head=()=>el('thead',{},el('tr',{},f.cols.map(c=>el('th',{text:c.unit?`${c.label} (${c.unit})`:c.label}))));
+  const row=r=>{
+    const fixed=f.fixed&&f.fixed[r],tds=[];
+    if(fixed&&lc)tds.push(el('td',{colspan:lc,class:'b',text:fixed}));
+    for(const c of f.cols){
+      if(fixed&&c.labelCol)continue;
+      const k=`${f.k}.${r}.${c.k}`;
+      tds.push(r>=n?el('td',{}):c.t==='check'?el('td',{},cb(!!S[k])):el('td',{text:S[k]||''}));
+    }
+    return el('tr',{},tds);
+  };
+  const tbl=(from,to)=>{const rows=[];for(let r=from;r<to;r++)rows.push(row(r));
+    return el('table',{class:'p-tbl'},head(),el('tbody',{},rows))};
+  // Like the Tukes form: short tables without fixed rows print as two halves side by side
+  if(!f.fixed&&n>=2){const half=Math.ceil(n/2);return el('div',{class:'p-two'},tbl(0,half),tbl(half,half*2))}
+  return tbl(0,n);
+}
+function pFields(fields){
+  const out=[];let line=null,boxes=[];
+  const flushLine=()=>{if(line){out.push(el('div',{class:'p-checks'},line));line=null}};
+  const flushBoxes=()=>{if(boxes.length){out.push(el('div',{class:'p-row'},boxes));boxes=[]}};
+  const toLine=(...nodes)=>{flushBoxes();(line=line||[]).push(...nodes)};
+  for(let i=0;i<fields.length;i++){
+    const f=fields[i];
+    if(f.screenOnly)continue;
+    if(f.t==='check'){toLine(el('span',{class:'p-chk'},f.label,cb(!!S[f.k])));continue}
+    if(f.t==='choice'){
+      toLine(f.label?el('span',{class:'p-chl',text:f.label}):null,
+        ...f.opts.map((o,j)=>el('span',{class:'p-chk'},o,cb(S[f.k]===j+1))));continue}
+    if(f.t==='text'||f.t==='grid'){flushLine();(f.t==='grid'?f.fields:[f]).forEach(x=>boxes.push(pBox(x)));continue}
+    // A heading directly followed by tick-boxes becomes the label of that line
+    if(f.t==='h'&&fields[i+1]&&fields[i+1].t==='check'){flushLine();toLine(el('span',{class:'p-chl b',text:f.text+':'}));continue}
+    // A note directly followed by tick-boxes is printed at the right end of that line
+    if(f.t==='note'&&fields[i+1]&&fields[i+1].t==='check'){
+      const note=el('span',{class:'p-cnote',text:f.text});flushLine();
+      let j=i+1;line=[];while(fields[j]&&fields[j].t==='check'){const c=fields[j++];line.push(el('span',{class:'p-chk'},c.label,cb(!!S[c.k])))}
+      line.push(note);flushLine();i=j-1;continue}
+    flushLine();flushBoxes();
+    if(f.t==='h')out.push(el('div',{class:'p-sub',text:f.text}));
+    else if(f.t==='note')out.push(el('div',{class:'p-note',text:f.text}));
+    else if(f.t==='table')out.push(pTable(f));
+    else if(f.t==='item')out.push(...pFields(f.fields));
+  }
+  flushLine();flushBoxes();return out;
+}
+function pSide(fields){
+  const groups=[];let cur=null;
+  for(const f of fields){if(f.t==='h'){cur={h:f.text,f:[]};groups.push(cur)}else if(cur)cur.f.push(f)}
+  return groups.map(g=>el('div',{class:'p-side'},el('div',{class:'p-sl',text:g.h}),el('div',{class:'p-sr'},pFields(g.f))));
+}
+function renderPrint(){
+  const root=document.getElementById('print');root.textContent='';
+  root.append(el('h1',{text:'IBRUKTAGNINGSPROTOKOLL'}));
+  root.append(el('div',{class:'p-frame'},SECTIONS.map(s=>{
+    const sideLayout=s.fields.some(f=>f.t==='h')&&s.id==='g';
+    return el('div',{class:'p-sec'},
+      el('div',{class:'p-h',text:s.id==='g'?s.title:`${s.n}. ${s.title}`}),
+      sideLayout?pSide(s.fields):pFields(s.fields));
+  })));
+  root.append(el('div',{class:'p-foot'},
+    el('span',{text:'Upprättat enligt Tukes modell för ibruktagningsprotokoll'}),
+    el('span',{text:'Utskrivet '+new Date().toLocaleDateString('fi-FI')})));
+}
+addEventListener('beforeprint',renderPrint);
+document.getElementById('printBtn').onclick=()=>{renderPrint();print()};
+document.getElementById('newBtn').onclick=async()=>{
+  if(!confirm('Börja på ett nytt, tomt protokoll? Det nuvarande sparas som "föregående utkast".'))return;
+  if(currentCode)lsSet(LS_BAK,currentCode);
+  S={};render();await save();refreshRestore();window.scrollTo(0,0);
+};
+document.getElementById('restoreBtn').onclick=async()=>{
+  const bak=lsGet(LS_BAK);if(!bak)return;
+  if(!confirm('Byta till föregående utkast? Det nuvarande blir i sin tur sparat som föregående.'))return;
+  try{const prev=await decode(bak);if(currentCode)lsSet(LS_BAK,currentCode);S=prev;render();await save();toast('Föregående utkast återställt')}
+  catch(e){toast('Kunde inte läsa utkastet')}
+};
+function refreshRestore(){document.getElementById('restoreBtn').hidden=!lsGet(LS_BAK)}
+
+/* Share */
+const dlg=document.getElementById('shareDlg');
+function shareUrl(){return location.origin+location.pathname+(currentCode?'#'+currentCode:'')}
+document.getElementById('shareBtn').onclick=async()=>{
+  clearTimeout(saveT);await save();
+  const url=shareUrl(),box=document.getElementById('qrBox'),stats=document.getElementById('qrStats');
+  document.getElementById('urlText').textContent=url;
+  box.textContent='';
+  if(typeof qrcode!=='function'){box.append(el('div',{class:'qrmsg',text:'QR-biblioteket kunde inte laddas (offline?). Kopiera länken i stället.'}));stats.textContent=''}
+  else try{
+    const qr=qrcode(0,'L');qr.addData(url,'Byte');qr.make();
+    box.innerHTML=qr.createSvgTag({cellSize:4,margin:4,scalable:true});
+    const ver=(qr.getModuleCount()-17)/4;
+    stats.textContent=`${url.length} tecken · QR-version ${ver}/40`+(ver>25?' · tät kod, visa i full ljusstyrka':'');
+  }catch(e){
+    box.append(el('div',{class:'qrmsg',text:'Protokollet är för stort för en QR-kod. Korta ner fritexten eller dela länken.'}));
+    stats.textContent=`${url.length} tecken`;
+  }
+  document.getElementById('nativeShareBtn').hidden=!navigator.share;
+  dlg.showModal();
+};
+document.getElementById('closeDlg').onclick=()=>dlg.close();
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
+document.getElementById('copyBtn').onclick=async()=>{
+  try{await navigator.clipboard.writeText(shareUrl());toast('Länken kopierad')}catch(e){toast('Kunde inte kopiera')}};
+document.getElementById('nativeShareBtn').onclick=()=>{
+  const t=[S['g.on'],S['g.oc']].filter(Boolean).join(' – ');
+  navigator.share({title:'Ibruktagningsprotokoll'+(t?' '+t:''),url:shareUrl()}).catch(()=>{})};
+
+/* Init: URL wins over local draft; local draft kept as backup */
+(async()=>{
+  const fromUrl=location.hash.slice(1),local=lsGet(LS_KEY)||'';
+  let code=fromUrl||local;
+  if(fromUrl&&local&&local!==fromUrl)lsSet(LS_BAK,local);
+  if(code){try{S=await decode(code)}catch(e){S={};toast('Kunde inte läsa protokollet i länken')}}
+  render();renderPrint();
+  if(code)await save();
+  refreshRestore();
+})();
+</script>
+</body>
+</html>
