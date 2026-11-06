@@ -60,6 +60,7 @@ input[type=text],input[type=tel],input[type=email],input[type=date],textarea{
   border:1px solid var(--line);border-radius:10px;padding:10px 11px;min-height:44px}
 textarea{resize:vertical;min-height:72px;field-sizing:content}
 input:focus,textarea:focus,.btn:focus-visible,.seg button:focus-visible{outline:3px solid var(--focus);outline-offset:1px;border-color:var(--accent)}
+.hint{color:var(--muted);font-size:12.5px;margin-top:3px;line-height:1.3}
 .unit{color:var(--muted);font-size:14px;flex:none;min-width:22px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
 .grid>.wide{grid-column:1/-1}
@@ -715,13 +716,13 @@ const SECTIONS=[
  ]},
  {id:'s3',n:'3',title:'Isolationsresistans',req:true,open:true,fields:[
   TBL('s3.t',{min:1,max:30,rowLabel:'Mätning',cols:[
-    T('o','Objekt',{span:3,ph:'t.ex. hela installationen'}),T('g','Grupp'),
+    T('o','Objekt',{span:3,hint:'T.ex. hela installationen'}),T('g','Grupp'),
     T('r','Rᵢ',{type:'num',unit:'MΩ'}),T('a','Anm.',{span:3})]}),
   C('s3.k','Isolationsresistanserna har konstaterats vara kravenliga',REQ)
  ]},
  {id:'s4',n:'4',title:'Automatisk frånkoppling av matning',req:true,open:true,fields:[
   TBL('s4.t',{min:2,max:40,noRowLabel:true,fixed:['Central'],cols:[
-    T('g','Grupp / Undercentral',{labelCol:true,span:2,ph:'t.ex. R1'}),T('p','Objekt',{labelCol:true,span:2,ph:'t.ex. spis'}),
+    T('g','Grupp / Undercentral',{labelCol:true,span:2,hint:'T.ex. R1'}),T('p','Objekt',{labelCol:true,span:2,hint:'T.ex. spis'}),
     T('ik','Iₖ',{type:'num',unit:'A'}),T('zk','Zₖ',{type:'num',unit:'Ω'}),
     T('sa','Skydds\u00ADapparat'),T('in','Iₙ',{type:'num',unit:'A'})]}),
   N('Skyddsapparat = typ, t.ex. gG eller C. Iₙ = skyddsapparatens märkström.',{screenOnly:true}),
@@ -731,7 +732,7 @@ const SECTIONS=[
  ]},
  {id:'s5',n:'5',title:'Jordfelsbrytare',req:true,open:true,fields:[
   TBL('s5.t',{min:1,max:30,rowLabel:'Jordfelsbrytare',cols:[
-    T('ty','Typ och användningsändamål',{span:3,ph:'t.ex. A TS'}),T('g','Grupp'),
+    T('ty','Typ och användningsändamål',{span:3,hint:'T.ex. A TS'}),T('g','Grupp'),
     T('t','t',{type:'num',unit:'ms'}),T('i','IΔn',{type:'num',unit:'mA'}),
     C('tk','Testknapp OK',{span:2})]}),
   N('Användningsändamål: FS = felskydd, TS = tilläggsskydd, BS = brandskydd'),
@@ -752,13 +753,13 @@ const SECTIONS=[
   R('s8.v',null,['Överlämnade till beställaren','Inga apparater eller installationer som kräver separata anvisningar'],{vert:true})
  ]},
  {id:'s9',n:'9',title:'Tillämpade standarder',req:true,fields:[
-  T('s9.u','Standardhandbok SFS 6000, upplaga',{ph:'t.ex. SFS 6000:2022',req:true}),
+  T('s9.u','Standardhandbok SFS 6000, upplaga',{hint:'T.ex. SFS 6000:2022',req:true}),
   T('s9.a','och annat, vad?'),
   C('s9.k','Installationerna har konstaterats vara utförda enligt kraven i ovan nämnda standarder',REQ)
  ]},
  {id:'s10',n:'10',title:'Besiktningens utförare',req:true,fields:[
   signer('s10.','Datum',REQ),
-  T('s10.i','Mätinstrument som använts vid besiktningen',{ph:'t.ex. Fluke 1664 FC'})
+  T('s10.i','Mätinstrument som använts vid besiktningen',{hint:'T.ex. Fluke 1664 FC'})
  ]}
 ];
 const ALL=SECTIONS;
@@ -916,7 +917,7 @@ function renderField(f){
     return el('div',{class:'fld'},f.label?el('span',{class:'lbl'},f.label,reqMark(f)):null,seg)}
   default:{
     const id='f'+(++uid),type=f.type||'text';
-    const attrs={id,'data-k':f.k,placeholder:f.ph||null};
+    const attrs={id,'data-k':f.k,'aria-describedby':f.hint?id+'h':null};
     let input;
     if(type==='area')input=el('textarea',{...attrs,rows:3});
     else if(type==='num')input=el('input',{...attrs,type:'text',inputmode:'decimal'});
@@ -924,7 +925,8 @@ function renderField(f){
     return el('div',{class:'fld'+(f.wide?' wide':'')+(f.span?' s'+f.span:''),
         'data-show-k':f.showIf?.[0],'data-show-v':f.showIf?.[1]},
       el('label',{class:'lbl',for:id},f.label,reqMark(f)),
-      el('div',{class:'inwrap'},input,f.unit?el('span',{class:'unit',text:f.unit}):null))}
+      el('div',{class:'inwrap'},input,f.unit?el('span',{class:'unit',text:f.unit}):null),
+      f.hint?el('div',{class:'hint',id:id+'h',text:f.hint}):null)}
   }
 }
 function rowFilled(f,r){return f.cols.some(c=>S[`${f.k}.${r}.${c.k}`])}

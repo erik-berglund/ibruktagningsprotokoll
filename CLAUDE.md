@@ -20,7 +20,7 @@ data lives only in the user's browser and in share links (the `#…` part of the
   loaded from cdnjs.
 - `SECTIONS` is the schema. Field helpers: `T` (text; `type` can be `num`, `tel`, `email`, `date` or `area`),
   `C` (checkbox), `R` (choice), `G` (side-by-side grid), `H` (sub-heading), `N` (note), `TBL` (repeating table
-  rows with `min`, `max`, `fixed` and `cols`). Options: `req` (red * marker), `showIf:[key,value]`,
+  rows with `min`, `max`, `fixed` and `cols`). Options: `req` (red * marker), `hint` (grey example text below the input, e.g. "T.ex. R1"; no placeholders), `showIf:[key,value]`,
   `screenOnly`, `span` (table column width out of 4), and `printLabel` / `printSign` for print.
 - **Link format (keyed, backwards compatible):** `#` plus `J` (deflate-raw) or `j` (uncompressed) plus base64url of
   a JSON object. Text fields are stored as `"key":"value"`, checkboxes as `1`, choices as the 1-based option
