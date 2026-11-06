@@ -21,6 +21,9 @@ applied, and the inspector.
   and encoded as base64url. A fully filled-in protocol is about 900 characters.
 - **Print.** **Skriv ut** prints a compact A4 layout modelled on the Tukes form. A typical protocol fits on one
   page.
+- **Print view link.** Add `?print` before the `#` (`…/ibruktagningsprotokoll/?print#J…`) to open a protocol
+  read-only in its print layout, with the print dialog open, so it can be saved as PDF. This mode never saves
+  anything in the browser, so it's safe for teachers opening students' links.
 - **Help for students.** **Innan du börjar mäta** and the **Hjälp** buttons in sections 1–6 explain why each
   measurement is done, what is approved, and how to measure step by step with a Fluke 1662/1663/1664 FC or a
   Beha-Amprobe Telaris ProInstall-100 or -200.

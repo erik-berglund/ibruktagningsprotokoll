@@ -35,7 +35,9 @@ data lives only in the user's browser and in share links (the `#…` part of the
 - State: `S` (key → value). It's saved to `localStorage['ibp.v1']` and the URL hash. A replaced draft goes to
   `ibp.backup`, and open/closed sections are in `ibp.open`.
 - Print: `renderPrint()` builds a separate `#print` DOM (a Tukes-style A4 layout) after every save. Print CSS shows
-  only `#print`. Add `class="pp"` to `body` to preview it on screen. Check that the Tukes example data still
+  only `#print`. Add `class="pp"` to `body` to preview it on screen. `?print` in the URL (`PRINT_ONLY`) shows only the print
+  layout, calls `print()` once, and blocks all `lsSet` writes and `save()`. Other tools (the teacher's itslearning
+  review UI) link to `…/?print#<code>`, so keep that URL shape working. Check that the Tukes example data still
   fits on one A4 page after changing the layout.
 - Help texts: Markdown in `<script type="text/markdown">` blocks (`#md-general`, `#md-beha`, `#md-beha200`, `#md-fluke`) in
   `index.html`, rendered by a small built-in Markdown renderer (`md()`: headings, paragraphs, bold/italic, links,

@@ -159,9 +159,12 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
   body{background:#fff!important;padding:0}
   #print{display:block}
 }
-body.pp>*:not(#print){display:none!important}
+body.pp>*:not(#print):not(.pp-bar){display:none!important}
 body.pp{background:#fff}
 body.pp #print{display:block;width:190mm;margin:0 auto}
+.pp-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;
+  margin:0 auto 12px;padding:10px 0;font:15px/1.3 system-ui,sans-serif;color:#000}
+.pp-bar .btn{color:var(--text)}
 #print{color:#000;background:#fff;font:7.5pt/1.25 Arial,Helvetica,sans-serif;
   -webkit-print-color-adjust:exact;print-color-adjust:exact}
 #print h1{font-size:11pt;margin:0 0 2mm;letter-spacing:.02em}
@@ -242,6 +245,11 @@ body.pp #print{display:block;width:190mm;margin:0 auto}
   <div id="helpBody"></div>
 </dialog>
 <div class="toast" id="toast"></div>
+<div class="pp-bar" id="ppBar" hidden>
+  <button class="btn primary" type="button" id="ppPrint">Skriv ut / Spara som PDF</button>
+  <a class="btn" id="ppEdit" href="./">Öppna i formuläret</a>
+  <span id="ppMsg"></span>
+</div>
 <div id="print" aria-hidden="true"></div>
 
 <!-- ---------------------------------------------------------------
@@ -872,9 +880,11 @@ async function decode(code){
 let S={};const ROWS={};
 const LS_KEY='ibp.v1',LS_BAK='ibp.backup',LS_OPEN='ibp.open';
 const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
-const lsSet=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}};
+const lsSet=(k,v)=>{if(PRINT_ONLY)return;try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}};
 let openState={};try{openState=JSON.parse(lsGet(LS_OPEN)||'{}')}catch(e){}
 let currentCode='';
+/* ?print: read-only print view of the protocol in the link. Never touches localStorage. */
+const PRINT_ONLY=new URLSearchParams(location.search).has('print');
 
 /* ---------------------------------------------------------------
    RENDERING
@@ -1002,6 +1012,7 @@ function updateBadges(){
 let saveT;
 function changed(){updateBadges();clearTimeout(saveT);saveT=setTimeout(save,250)}
 async function save(){
+  if(PRINT_ONLY)return;
   currentCode=await encode(S);
   history.replaceState(null,'',location.pathname+location.search+(currentCode?'#'+currentCode:''));
   lsSet(LS_KEY,currentCode||null);
@@ -1279,8 +1290,24 @@ function showNotice(list){
 }
 document.getElementById('noticeClose').onclick=()=>{document.getElementById('notice').hidden=true;save()};
 
+/* Init (?print): show only the print layout and open the print dialog */
+async function initPrintOnly(){
+  const code=location.hash.slice(1);
+  document.body.classList.add('pp');document.getElementById('print').removeAttribute('aria-hidden');
+  const bar=document.getElementById('ppBar');bar.hidden=false;
+  document.getElementById('ppEdit').href=location.pathname+location.hash;
+  document.getElementById('ppPrint').onclick=()=>print();
+  if(!code){document.getElementById('ppMsg').textContent='Länken innehåller inget protokoll.';return}
+  try{({S}=await decode(code))}catch(e){document.getElementById('ppMsg').textContent='Kunde inte läsa protokollet i länken.';return}
+  render();renderPrint();
+  const t=[S['g.on'],S['g.oc']].filter(Boolean).join(' – ');
+  document.title='Ibruktagningsprotokoll'+(t?' '+t:'');   // default PDF file name
+  setTimeout(()=>print(),300);
+}
+
 /* Init: URL wins over local draft; local draft kept as backup */
-(async()=>{
+if(PRINT_ONLY)initPrintOnly();
+else (async()=>{
   const fromUrl=location.hash.slice(1),local=lsGet(LS_KEY)||'';
   let code=fromUrl||local;
   if(fromUrl&&local&&local!==fromUrl)lsSet(LS_BAK,local);
