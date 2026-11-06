@@ -23,7 +23,7 @@ applied, and the inspector.
   page.
 - **Help for students.** **Innan du börjar mäta** and the **Hjälp** buttons in sections 1–6 explain why each
   measurement is done, what is approved, and how to measure step by step with a Fluke 1662/1663/1664 FC or a
-  Beha-Amprobe Telaris ProInstall-100.
+  Beha-Amprobe Telaris ProInstall-100 or -200.
 - Fields marked **\*** and sections marked **Krävs** are required content, based on our reading of government
   decree 1434/2016 § 4 and SFS 6000-6.
 

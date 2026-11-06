@@ -376,7 +376,7 @@ nödstopp och maskiner fungerar.
 ## Källor
 
 - Fluke 1662/1663/1664 FC Users Manual, Rev. 2 (10/22), och Beha-Amprobe Telaris ProInstall-100/200 Users
-  Manual (7/2013): mätmetoderna.
+  Manual (4/2019): mätmetoderna.
 - Finskspråkigt Fluke-dokument om SFS 6000-6, enligt sökresultat: testordning och gränser för
   isolationsresistans.
 - Tukes modellprotokoll: exemplet med R9.
@@ -469,8 +469,8 @@ på **TEST**.
    - **321** betyder omvänd. Två faser är förväxlade.
    - **---** betyder för låg spänning. Kontrollera anslutningarna.
 </script>
-<script type="text/markdown" id="md-beha" data-name="ProInstall-100">
-Stegen följer Beha-Amprobe Telaris ProInstall-100/200 Users Manual (7/2013).
+<script type="text/markdown" id="md-beha" data-name="ProInstall 100">
+Stegen följer Beha-Amprobe Telaris ProInstall-100/200 Users Manual (4/2019).
 
 **Uttagen på instrumentet:** L = **röd**, PE = **grön**, N = **blå**.
 
@@ -479,8 +479,97 @@ Stegen följer Beha-Amprobe Telaris ProInstall-100/200 Users Manual (7/2013).
 **Beröringsplattan:** den sitter runt TEST-knappen. Rör vid den före tester med spänning. Om symbolen ovanför
 plattan tänds är det över 100 V mellan dig och PE. Stoppa då.
 
-> **Obs!** ProInstall-100 kan **inte** testa jordfelsbrytare av **typ B**. Det kan bara ProInstall-200. Den kan
-> inte heller mäta jordtagsresistans.
+> **Obs!** ProInstall-100 kan **inte** testa jordfelsbrytare av **typ B** och har inget automatiskt test av
+> jordfelsbrytare. Det kan bara ProInstall-200.
+
+---
+
+## 2. Kontinuitet (RLO): spänningslöst
+
+1. Vrid ratten till **RLO**.
+2. Använd **röd (L) och grön (PE)**.
+3. **Nollställ (compa) sladdarna:** koppla ihop sladdarnas spetsar och håll in **F3** tills texten **comp** visas.
+   Värdet sparas även när instrumentet är avstängt. Batterierna ska vara laddade.
+4. Anslut mellan PE-skenan i centralen och PE i punkten du mäter.
+5. Håll in **TEST** tills värdet är stabilt.
+
+Om kretsen har spänning stoppas testet, och spänningen visas i den nedre displayen.
+
+## 3. Isolationsresistans (RISO): spänningslöst
+
+1. Vrid ratten till **RISO**.
+2. Använd **röd (L) och grön (PE)**.
+3. Välj testspänning **500 V** med **F4**. Du kan välja 100, 250, 500 eller 1000 V.
+4. Håll in **TEST** tills värdet är stabilt.
+   - Övre displayen visar resistansen (MΩ).
+   - Nedre displayen visar den verkliga testspänningen (UN). Den ska vara minst den valda.
+
+Om kretsen har spänning går testet inte att starta.
+
+## 4. Slingimpedans (ZI): med spänning
+
+1. Vrid ratten till **ZI No Trip**. Den löser inte ut jordfelsbrytare.
+   **ZI Hi Current** får bara användas om kretsen saknar jordfelsbrytare.
+2. Anslut alla tre sladdarna till L, PE och N på instrumentet. Använd bara de **kalibrerade sladdarna** som följer
+   med: deras resistans dras av automatiskt.
+3. Välj **L-PE** med **F1**.
+4. Anslut till L, PE och N i installationen, eller stick in mätsladden i uttaget.
+5. Rör vid beröringsplattan och tryck sedan på **TEST**. Det tar några sekunder.
+6. Övre displayen visar **Zₖ** (Ω), och nedre displayen felströmmen **PSC = Iₖ** (A eller kA).
+
+Om kretsen har en jordfelsbrytare på **10 mA** löser den ut även i No Trip-läget. Fråga läraren hur du gör då.
+
+## 5. Jordfelsbrytare (ΔT): med spänning
+
+ProInstall-100 har **inget Auto-läge**. Du gör testen ett i taget.
+
+1. Stick in instrumentet i ett uttag efter jordfelsbrytaren.
+2. Vrid ratten till **jordfelsbrytare, utlösningstid (ΔT)**.
+3. Välj märkström med **F1**, oftast **30 mA**.
+4. Välj typ efter texten på brytaren med **F3**:
+   - **AC**: vanlig.
+   - **A**: halvvåg.
+   - **S**: fördröjd AC eller A.
+5. Välj multiplikator med **F2** och fas med **F4** (0° eller 180°). Gör de här testen:
+   - **x½** i 0° och 180°: brytaren ska **inte** lösa ut.
+   - **x1** i 0° och 180°: övre displayen visar tiden.
+   - **x5** i 0° och 180°: övre displayen visar tiden.
+6. Tryck på **TEST** för varje test. **Återställ brytaren** varje gång den löser ut.
+
+**Utlösningsström (ramptest):** vrid ratten till **jordfelsbrytare, utlösningsström (IΔN)**. Välj märkström med
+F1, typ med F2 och fas med F4. Tryck på **TEST**. Strömmen ökar tills brytaren löser ut.
+
+## 6. Fasföljd: med spänning
+
+1. Vrid ratten till **fasföljd**.
+2. Anslut **L1 → röd (L)**, **L2 → grön (PE)** och **L3 → blå (N)**.
+3. Läs av den övre displayen:
+   - **123** betyder rätt fasföljd.
+   - **321** betyder omvänd. Två faser är förväxlade.
+   - **---** betyder för låg spänning. Kontrollera anslutningarna.
+
+---
+
+## Felkoder
+
+| Visas | Betyder | Gör så här |
+|---|---|---|
+| Err 2 | Instrumentet är för varmt | Vänta tills det har svalnat |
+| Err 4 | För hög felspänning | Kontrollera installationen, särskilt spänningen mellan N och PE |
+| Err 1 | Självtestet misslyckades | Lämna instrumentet till läraren |
+</script>
+<script type="text/markdown" id="md-beha200" data-name="ProInstall 200">
+Stegen följer Beha-Amprobe Telaris ProInstall-100/200 Users Manual (4/2019).
+
+**Uttagen på instrumentet:** L = **röd**, PE = **grön**, N = **blå**.
+
+**Knapparna F1–F4** byter inställning. Vad de gör beror på ratt-läget, se varje mätning nedan.
+
+**Beröringsplattan:** den sitter runt TEST-knappen. Rör vid den före tester med spänning. Om symbolen ovanför
+plattan tänds är det över 100 V mellan dig och PE. Stoppa då.
+
+> ProInstall-200 kan också testa jordfelsbrytare av **typ B** och mäta **jordtagsresistans (RE)** med jordspett.
+> Jordtagsresistans ingår inte i det här protokollet.
 
 ---
 
@@ -527,10 +616,12 @@ Enklast är **Auto-läget**:
 2. Vrid ratten till **jordfelsbrytare, utlösningstid (ΔT)**.
 3. Välj märkström med **F1**, oftast **30 mA**.
 4. Välj **Auto** med **F2**.
+   Auto finns bara för 10, 30 och 100 mA.
 5. Välj typ efter texten på brytaren med **F3**:
    - **AC**: vanlig.
    - **A**: halvvåg.
-   - **S**: fördröjd AC eller A.
+   - **B**: slät likström (DC).
+   - **S**: fördröjd AC, A eller B.
 6. Tryck på **TEST**. Instrumentet testar ½×, 1× och 5×, i både 0° och 180°. **Återställ brytaren** varje gång den
    löser ut.
 7. Bläddra bland resultaten med pilknapparna. Det första som visas är det sista testet (5×).
@@ -539,6 +630,9 @@ Resultaten finns bara i ett tillfälligt minne. Om du vill spara dem måste varj
 
 **Ett test i taget (utan Auto):** välj märkström med F1, multiplikator med F2 (oftast **x1**), typ med F3 och fas
 med F4 (0° eller 180°). Testa båda faserna. Tryck på **TEST**. Övre displayen visar tiden.
+
+**Typ B:** använd **alla tre sladdarna** (L, PE och N), inte bara stickkontakten. Testa i både 0° och 180°.
+Nätspänningen måste vara 195–265 V.
 
 **Utlösningsström (ramptest):** vrid ratten till **jordfelsbrytare, utlösningsström (IΔN)**. Välj märkström med
 F1, typ med F2 och fas med F4. Tryck på **TEST**. Strömmen ökar tills brytaren löser ut.
@@ -1126,7 +1220,7 @@ const HELP={general:null,instr:{}};
 function loadHelp(){
   if(HELP.general)return;
   HELP.general=splitDoc(document.getElementById('md-general').textContent);
-  for(const id of ['beha','fluke']){const e=document.getElementById('md-'+id);
+  for(const id of ['beha','beha200','fluke']){const e=document.getElementById('md-'+id);
     HELP.instr[id]={name:e.dataset.name,...splitDoc(e.textContent)}}
 }
 const LS_INSTR='ibp.instr';

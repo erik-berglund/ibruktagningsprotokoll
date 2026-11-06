@@ -37,7 +37,7 @@ data lives only in the user's browser and in share links (the `#…` part of the
 - Print: `renderPrint()` builds a separate `#print` DOM (a Tukes-style A4 layout) after every save. Print CSS shows
   only `#print`. Add `class="pp"` to `body` to preview it on screen. Check that the Tukes example data still
   fits on one A4 page after changing the layout.
-- Help texts: Markdown in `<script type="text/markdown">` blocks (`#md-general`, `#md-fluke`, `#md-beha`) in
+- Help texts: Markdown in `<script type="text/markdown">` blocks (`#md-general`, `#md-beha`, `#md-beha200`, `#md-fluke`) in
   `index.html`, rendered by a small built-in Markdown renderer (`md()`: headings, paragraphs, bold/italic, links,
   nested lists, tables, blockquotes). `splitDoc()` splits each block at `## ` headings: `## Innan du börjar`
   → the "Innan du börjar mäta" modal, `## N. …` → the Hjälp button of form section N, `## Källor` → sources.
