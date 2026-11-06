@@ -47,6 +47,12 @@ data lives only in the user's browser and in share links (the `#…` part of the
   Add an instrument by adding another `md-…` block with `data-name` and listing its id in `loadHelp()`. The first id there is shown first and is the default (ProInstall-100). Help
   texts are for ~16-year-old students: short sentences, explain *why* before *how*. Limit values must be checked
   against SFS 6000.
+- Security: link data is untrusted. Put it on the page only with `el()` / `textContent`, never `innerHTML`
+  (`innerHTML` is only for the built-in help Markdown). `decode()` rejects codes over `MAX_CODE` characters and
+  JSON over `MAX_JSON` bytes after unpacking (zip-bomb guard); `fromObj` looks up keys with `Object.hasOwn`. A
+  link that can't be read keeps the student's draft. The QR script has an SRI `integrity` hash: update it if the
+  version changes. The `<meta>` Content-Security-Policy allows scripts only from the page and cdnjs: update it if
+  you add another external resource.
 - Swedish UI text. Keep the wording close to ST 51.21.08 and the Tukes example.
 
 ## Local preview
