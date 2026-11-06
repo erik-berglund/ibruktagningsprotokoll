@@ -927,7 +927,9 @@ form.addEventListener('click',e=>{
   applyConditions();
   changed();
 });
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;
+  /* an open modal dialog sits in the browser's top layer, above any z-index: show the toast inside it */
+  const d=document.querySelector('dialog[open]');(d||document.body).append(t);t.classList.add('show');
   clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),1800)}
 /* ---------------------------------------------------------------
    PRINT: builds a compact, Tukes-style A4 layout from the schema
