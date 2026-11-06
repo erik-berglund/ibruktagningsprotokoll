@@ -15,7 +15,8 @@ applied, and the inspector.
 - **Stateless.** Everything you type is saved in the browser (localStorage) and, at the same time, in the page
   address after `#`. The `#` part is never sent to the web server, so no data leaves the device unless you
   share the link yourself.
-- **Share with a QR code.** **Dela / QR-kod** shows a QR code and a link. Opening the link on another device
+- **Share with a QR code.** **Dela / QR-kod** shows a QR code and a link. The QR code is an image with the link
+  printed below it, so it can be copied (**Kopiera bild**, or long-press / right-click) and pasted elsewhere. Opening the link on another device
   fills in the whole protocol. The data is stored as JSON with a key for every value, compressed with deflate
   and encoded as base64url. A fully filled-in protocol is about 900 characters.
 - **Print.** **Skriv ut** prints a compact A4 layout modelled on the Tukes form. A typical protocol fits on one

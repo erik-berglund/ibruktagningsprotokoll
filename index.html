@@ -106,7 +106,7 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
 .dlg{padding:16px}
 .dlg h2{margin:0 0 4px;font-size:18px}
 .qr{background:#fff;border-radius:10px;padding:8px;margin:12px 0;display:grid;place-items:center}
-.qr svg{width:100%;height:auto;max-width:360px;display:block}
+.qr img{width:100%;height:auto;max-width:360px;display:block;-webkit-touch-callout:default}
 .qrmsg{color:#333;padding:24px;text-align:center}
 .url{font:12px/1.35 ui-monospace,Menlo,monospace;word-break:break-all;color:var(--muted);
   max-height:4.2em;overflow:hidden;margin:8px 0}
@@ -231,6 +231,7 @@ body.pp #print{display:block;width:190mm;margin:0 auto}
     <div class="url" id="urlText"></div>
     <div class="row">
       <button class="btn primary" type="button" id="copyBtn">Kopiera länk</button>
+      <button class="btn" type="button" id="copyImgBtn" hidden>Kopiera bild</button>
       <button class="btn" type="button" id="nativeShareBtn" hidden>Dela…</button>
       <button class="btn" type="button" id="closeDlg">Stäng</button>
     </div>
@@ -1018,22 +1019,39 @@ function refreshRestore(){document.getElementById('restoreBtn').hidden=!lsGet(LS
 
 /* Share */
 const dlg=document.getElementById('shareDlg');
+let qrCanvas=null;
+/* QR code as a PNG-ready canvas, with the link in plain text as a footer (so the image works without a scanner too) */
+function drawQr(qr,url){
+  const n=qr.getModuleCount(),q=4,cell=Math.max(4,Math.floor(1000/(n+2*q))),W=(n+2*q)*cell,pad=cell*q;
+  const fs=Math.round(W/52),lh=Math.round(fs*1.35),font=fs+'px ui-monospace,Menlo,Consolas,monospace';
+  const c=document.createElement('canvas'),x=c.getContext('2d');
+  x.font=font;const per=Math.max(10,Math.floor((W-2*pad)/x.measureText('0').width));
+  const lines=[];for(let i=0;i<url.length;i+=per)lines.push(url.slice(i,i+per));
+  c.width=W;c.height=W+lines.length*lh+pad;
+  x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.fillStyle='#000';
+  for(let r=0;r<n;r++)for(let k=0;k<n;k++)if(qr.isDark(r,k))x.fillRect((k+q)*cell,(r+q)*cell,cell,cell);
+  x.font=font;x.textBaseline='top';x.fillStyle='#333';
+  lines.forEach((t,i)=>x.fillText(t,pad,W-pad/2+i*lh));
+  return c;
+}
 function shareUrl(){return location.origin+location.pathname+(currentCode?'#'+currentCode:'')}
 document.getElementById('shareBtn').onclick=async()=>{
   clearTimeout(saveT);await save();
   const url=shareUrl(),box=document.getElementById('qrBox'),stats=document.getElementById('qrStats');
   document.getElementById('urlText').textContent=url;
-  box.textContent='';
+  box.textContent='';qrCanvas=null;
   if(typeof qrcode!=='function'){box.append(el('div',{class:'qrmsg',text:'QR-biblioteket kunde inte laddas (offline?). Kopiera länken i stället.'}));stats.textContent=''}
   else try{
     const qr=qrcode(0,'L');qr.addData(url,'Byte');qr.make();
-    box.innerHTML=qr.createSvgTag({cellSize:4,margin:4,scalable:true});
+    qrCanvas=drawQr(qr,url);
+    box.append(el('img',{src:qrCanvas.toDataURL('image/png'),alt:'QR-kod med länken till protokollet'}));
     const ver=(qr.getModuleCount()-17)/4;
     stats.textContent=`${url.length} tecken · QR-version ${ver}/40`+(ver>25?' · tät kod, visa i full ljusstyrka':'');
   }catch(e){
     box.append(el('div',{class:'qrmsg',text:'Protokollet är för stort för en QR-kod. Korta ner fritexten eller dela länken.'}));
     stats.textContent=`${url.length} tecken`;
   }
+  document.getElementById('copyImgBtn').hidden=!(qrCanvas&&window.ClipboardItem&&navigator.clipboard&&navigator.clipboard.write);
   document.getElementById('nativeShareBtn').hidden=!navigator.share;
   dlg.showModal();
 };
@@ -1041,6 +1059,11 @@ document.getElementById('closeDlg').onclick=()=>dlg.close();
 dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
 document.getElementById('copyBtn').onclick=async()=>{
   try{await navigator.clipboard.writeText(shareUrl());toast('Länken kopierad')}catch(e){toast('Kunde inte kopiera')}};
+document.getElementById('copyImgBtn').onclick=async()=>{
+  try{
+    const blob=new Promise(res=>qrCanvas.toBlob(res,'image/png'));
+    await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);toast('Bilden kopierad');
+  }catch(e){toast('Kunde inte kopiera bilden. Håll fingret på bilden i stället.')}};
 document.getElementById('nativeShareBtn').onclick=()=>{
   const t=[S['g.on'],S['g.oc']].filter(Boolean).join(' – ');
   navigator.share({title:'Ibruktagningsprotokoll'+(t?' '+t:''),url:shareUrl()}).catch(()=>{})};
